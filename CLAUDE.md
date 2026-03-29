@@ -72,3 +72,8 @@ All COR24 repos live under `~/github/sw-embed/` as siblings:
 - `web-sw-cor24-assembler` — web IDE
 - `sw-cor24-rust` — Rust-to-COR24 pipeline
 - See `docs/refactoring-plan.md` for the full migration plan
+
+You are the only agent running for this project and have direct r/w
+access to all sw-embed repos. No wiki coordination needed — the
+agent-cas-wiki server is offline until parallel feature development
+resumes after this refactor is complete.
