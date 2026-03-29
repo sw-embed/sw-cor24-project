@@ -1,0 +1,1 @@
+Saga initialized. Hub repo has README, refactoring plan, CLAUDE.md. Phase 2 repo creation done (emulator renamed, assembler forked, web-assembler and rust created via clone+push).

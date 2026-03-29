@@ -1,0 +1,7 @@
+number = 19
+slug = "verify-sweep"
+status = "pending"
+description = "Final sweep — verify all repos build/test, all demos deploy, all cross-repo links updated, all Cargo.toml package names correct, migration-status.md marked complete."
+role = "legacy"
+context_files = []
+created_at = "2026-03-29T15:41:24"

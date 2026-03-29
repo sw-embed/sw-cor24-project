@@ -1,0 +1,7 @@
+number = 3
+slug = "trim-web-assembler"
+status = "pending"
+description = "Trim web-sw-cor24-assembler to web app scope. Remove CLI, rust-to-cor24, emulator/assembler source. Keep src/app.rs, components/, src/wasm.rs, src/challenge.rs, styles/, index.html, Trunk.toml. Update Cargo.toml path deps to ../sw-cor24-assembler and ../sw-cor24-emulator. Update Trunk.toml public_url. Add scripts/build-pages.sh and scripts/serve.sh. Verify trunk build works."
+role = "legacy"
+context_files = []
+created_at = "2026-03-29T15:41:24"

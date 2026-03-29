@@ -1,0 +1,7 @@
+number = 18
+slug = "portal-site"
+status = "pending"
+description = "Build sw-cor24-project GitHub Pages site with ISA overview, tutorials, language references, architecture diagrams, and links to all web-sw-cor24-* live demos."
+role = "legacy"
+context_files = []
+created_at = "2026-03-29T15:41:24"
