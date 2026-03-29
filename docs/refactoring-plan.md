@@ -1,17 +1,22 @@
 # COR24 Ecosystem Refactoring Plan
 
-> **Strategy: Fork → Redirect → Deprecate → Archive**
+> **Strategy: Rename / Fork / Clone+Push → Redirect → Deprecate → Archive**
 >
-> No repos are moved or deleted. Old repos are **forked** to new canonical
-> names under `sw-embed`, preserving full git history. Old repos get a
-> deprecation notice and eventually a redirect-only README pointing to the
-> fork. Old repos remain functional until all external references are
-> updated, then are archived.
+> Git history is always preserved. The method depends on the situation:
 >
-> Forking (rather than creating fresh repos) means:
-> - Full commit history is preserved in the new location
-> - GitHub shows the fork relationship, helping people navigate
-> - Old repo "forks" link leads to the new canonical repo
+> - **Rename**: For the primary successor of a repo (e.g., `cor24-rs` →
+>   `sw-cor24-emulator`). Preserves stars, issues, GH Pages, Actions
+>   history. GitHub auto-redirects old URLs permanently.
+> - **Fork**: For the first derivative of a renamed/existing repo (e.g.,
+>   fork `sw-cor24-emulator` → `sw-cor24-assembler`). Preserves full
+>   history and shows GitHub fork relationship. Limited to one fork per
+>   source per org.
+> - **Clone+push**: For additional derivatives when the fork slot is taken.
+>   Full history preserved; no GitHub fork badge.
+>
+> Old repos that aren't renamed get a deprecation notice and eventually
+> a redirect-only README. They remain functional until all external
+> references are updated, then are archived.
 
 ---
 
@@ -130,9 +135,19 @@ This table replaces implementation-language suffixes. It belongs in
 
 ## 4. The cor24-rs Split
 
-`cor24-rs` is a Rust workspace with tightly coupled crates. It gets
-split into **four** new repos via forking. Each fork starts from the
-full `cor24-rs` history, then removes the parts that don't belong.
+`cor24-rs` is a Rust workspace with tightly coupled crates. It becomes
+**four** new repos via rename + fork + clone+push. All four preserve
+the full `cor24-rs` git history, then each is trimmed to its scope.
+
+**Method:**
+1. **Rename** `cor24-rs` → `sw-cor24-emulator` (primary successor)
+2. **Fork** `sw-cor24-emulator` → `sw-cor24-assembler` (gets fork badge)
+3. **Clone+push** → `web-sw-cor24-assembler`
+4. **Clone+push** → `sw-cor24-rust`
+
+GitHub auto-redirects `sw-embed/cor24-rs` → `sw-embed/sw-cor24-emulator`
+permanently. The fork slot is used for the assembler (most closely related).
+The remaining two get full history via clone+push (no fork badge).
 
 ### Current workspace layout
 
@@ -157,8 +172,8 @@ cor24-rs/
 
 ### Split plan
 
-All four repos are forked from `cor24-rs`, preserving full history.
-After forking, each is trimmed to its scope and restructured.
+All four repos start with the full `cor24-rs` history.
+After creation, each is trimmed to its scope and restructured.
 
 **`sw-cor24-emulator`** — the foundation (owns the ISA):
 - `isa/` (cor24-isa crate — ISA definitions live here because the
@@ -331,42 +346,56 @@ web-sw-cor24-pascal/
 
 ### Phase 2 — Create core repos (emulator + assembler + Rust pipeline)
 
-**Goal:** Fork and split the foundation that everything else depends on.
+**Goal:** Split `cor24-rs` into four repos preserving full history.
 
-All four repos are forked from `cor24-rs` to `sw-embed`, then trimmed.
+#### Step 2a — Rename `cor24-rs` → `sw-cor24-emulator`
+- [ ] Rename via GitHub UI or `gh repo rename sw-cor24-emulator -R sw-embed/cor24-rs`
+  - GitHub auto-redirects `sw-embed/cor24-rs` URLs permanently
+  - Preserves stars, issues, GH Pages, Actions history
+- [ ] Clone locally: `git clone git@github.com:sw-embed/sw-cor24-emulator.git`
+- [ ] Trim: remove assembler-only code, web app, components, styles, pages
+- [ ] Keep `isa/`, `src/cpu/`, `src/emulator.rs`, `src/loader.rs`, `cli/`
+- [ ] Add `scripts/build.sh`
+- [ ] Update/adapt GitHub Actions CI workflow (`cargo test`, `cargo clippy`)
+- [ ] Ensure all emulator tests pass independently
 
-- [ ] Fork `cor24-rs` → `sw-cor24-emulator` under `sw-embed`
-  - Remove assembler-only code, web app, components, styles, pages
-  - Keep `isa/`, `src/cpu/`, `src/emulator.rs`, `src/loader.rs`, `cli/`
-  - Add `scripts/build.sh`
-  - Copy/adapt GitHub Actions CI workflow (`cargo test`, `cargo clippy`)
-  - Ensure all emulator tests pass independently
-- [ ] Fork `cor24-rs` → `sw-cor24-assembler` under `sw-embed`
-  - Remove emulator internals, web app, components, styles, pages
-  - Keep `src/assembler.rs`, assembler tests
-  - Add path dep on `sw-cor24-emulator` (for `cor24-isa` re-export)
-  - Add `scripts/build.sh`
-  - Copy/adapt CI workflow
-  - Ensure all assembler tests pass independently
-- [ ] Fork `cor24-rs` → `sw-cor24-rust` under `sw-embed`
-  - Remove everything except `rust-to-cor24/`
-  - Restructure as top-level crate
-  - Add path deps on `sw-cor24-assembler` + `sw-cor24-emulator`
-  - Mark `wasm2cor24` path as deprecated; `msp430-to-cor24` is the active path
-  - Add `scripts/build.sh`
-  - Copy/adapt CI workflow
-- [ ] Fork `cor24-rs` → `web-sw-cor24-assembler` under `sw-embed`
-  - Remove CLI, rust-to-cor24, emulator internals
-  - Keep `src/app.rs`, `components/`, `src/wasm.rs`, `src/challenge.rs`
-  - Keep `styles/`, `index.html`, `Trunk.toml`
-  - Update path deps to `../sw-cor24-assembler` + `../sw-cor24-emulator`
-  - Update `Trunk.toml` public_url to `/web-sw-cor24-assembler/`
-  - Add `scripts/build-pages.sh`, `scripts/serve.sh`
-  - Copy/adapt GitHub Actions deploy workflow
-  - Verify live demo works at new URL
-- [ ] Add deprecation notice to `cor24-rs` README
-  - Link to all four new repos
-  - Keep `cor24-rs` functional and deployed (old demo URL stays live)
+#### Step 2b — Fork `sw-cor24-emulator` → `sw-cor24-assembler`
+- [ ] Fork via GitHub UI or `gh repo fork sw-embed/sw-cor24-emulator --org sw-embed --fork-name sw-cor24-assembler`
+  - Gets GitHub fork badge + full history
+- [ ] Clone locally
+- [ ] Trim: remove emulator internals, web app, components, styles, pages
+- [ ] Keep `src/assembler.rs`, assembler tests
+- [ ] Add path dep on `sw-cor24-emulator` (for `cor24-isa` re-export)
+- [ ] Add `scripts/build.sh`
+- [ ] Copy/adapt CI workflow
+- [ ] Ensure all assembler tests pass independently
+
+#### Step 2c — Clone+push → `web-sw-cor24-assembler`
+- [ ] Create empty repo: `gh repo create sw-embed/web-sw-cor24-assembler --public`
+- [ ] Clone `sw-cor24-emulator`, change remote, push full history
+- [ ] Trim: remove CLI, rust-to-cor24, emulator internals
+- [ ] Keep `src/app.rs`, `components/`, `src/wasm.rs`, `src/challenge.rs`
+- [ ] Keep `styles/`, `index.html`, `Trunk.toml`
+- [ ] Update path deps to `../sw-cor24-assembler` + `../sw-cor24-emulator`
+- [ ] Update `Trunk.toml` public_url to `/web-sw-cor24-assembler/`
+- [ ] Add `scripts/build-pages.sh`, `scripts/serve.sh`
+- [ ] Copy/adapt GitHub Actions deploy workflow
+- [ ] Verify live demo works at new URL
+
+#### Step 2d — Clone+push → `sw-cor24-rust`
+- [ ] Create empty repo: `gh repo create sw-embed/sw-cor24-rust --public`
+- [ ] Clone `sw-cor24-emulator`, change remote, push full history
+- [ ] Trim: remove everything except `rust-to-cor24/`
+- [ ] Restructure as top-level crate
+- [ ] Add path deps on `../sw-cor24-assembler` + `../sw-cor24-emulator`
+- [ ] Mark `wasm2cor24` path as deprecated; `msp430-to-cor24` is active
+- [ ] Add `scripts/build.sh`
+- [ ] Copy/adapt CI workflow
+
+#### Step 2e — Deprecation note (not needed for cor24-rs)
+- GitHub auto-redirects `cor24-rs` → `sw-cor24-emulator`, so no
+  deprecation notice is needed. The old name simply resolves to the
+  new one.
 
 ### Phase 3 — Create p-code repo
 
@@ -568,7 +597,7 @@ archiving is to replace the demo with a redirect page:
 | p-code consolidation: absorbed repos lose history | Low | Absorbed repos (`pa24r`, `pl24r`, `pr24p`, `p24c`) keep their history in old (deprecated) locations; primary repo history preserved in fork |
 | Web build.rs scripts depend on external tools (tc24r) | Medium | Fork tc24r → sw-cor24-tinyc in Phase 5 before sw-cor24-pascal needs it; or update build to use new name |
 | Trunk public_url mismatch after fork | Low | Update Trunk.toml in each web repo immediately after forking |
-| GitHub fork limits (can only fork once per account) | Medium | For cor24-rs (forked 4 ways): fork once, then create remaining repos by cloning + pushing. GitHub won't show fork relationship for all four, but history is preserved. Alternative: use `gh repo create --template` if fork is blocked. |
+| GitHub fork limits (one fork per source per org) | Low | Mitigated: rename cor24-rs first (uses no fork slot), then fork once for assembler, clone+push for the remaining two. Only assembler gets fork badge; all four get full history. |
 
 ---
 
@@ -581,9 +610,11 @@ These questions were raised during planning and have been answered:
    repos depend on emulator and get ISA re-exported. Can be extracted to
    `sw-cor24-isa` later if coupling becomes painful.
 
-2. **Git history** → Preserved via GitHub forks. Old repos are forked to
-   new names under `sw-embed`. For consolidation repos (pcode, pascal),
-   the primary repo is forked and absorbed repos are copied in.
+2. **Git history** → Always preserved. For `cor24-rs`: rename to emulator
+   (primary successor), fork once for assembler, clone+push for the rest.
+   For other repos: fork to new names under `sw-embed`. For consolidation
+   repos (pcode, pascal), the primary repo is forked and absorbed repos
+   are copied in.
 
 3. **CI approach** → Standard `cargo test` / `cargo clippy` / `trunk build`,
    encapsulated in `scripts/build.sh` (library repos) and
