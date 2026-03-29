@@ -28,6 +28,7 @@ Execute it directly.
 ### 4. COMMIT (after the work is done)
 Commit your code changes with git. Use `/mw-cp` for the checkpoint
 process (pre-commit checks, docs, detailed commit, push).
+**Run `/mw-cp` in every repo that was modified during the step.**
 
 ### 5. COMPLETE (LAST thing, after committing)
 ```bash
