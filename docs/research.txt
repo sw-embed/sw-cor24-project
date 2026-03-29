@@ -1,0 +1,3060 @@
+
+
+
+
+I have a bunch of projects under: github.com/{softwarewrighter,sw-embed,sw-vibe-coding} that are related to the COR24 ISA (makerlisp.com).  I want to create a new organization and repo to unify this, maybe sw-cor24.  I want a repo cor24-project, that unifies (lists, links-to, explains) the projects and there relationshiip.  e.g. cor24-rs has an assembler and emulator for the COR24-TD board.  there is a C compiler, a Macro Lisp system, a FORTH interpreter, a p-code VM, a p-code assembler, a Pascal compiler, a Pascal runtime, a Pascal linker, and web demos for the cor24-rs assembler/emulator, the C compiler, the Macro Lisp, the Forth, the p-code VM and the Pascal compiler (and soon, a BASIC built on p-code, maybe an APL, too)
+
+
+Thought for 10s
+
+Received app response
+
+Thought
+You want a top-level GitHub organization and “portal” repo that makes the COR24 ecosystem legible: what exists, what depends on what, what runs where, what is stable vs experimental, and where the web demos live.
+
+High-level recommendation
+I would do this:
+
+Organization: sw-cor24
+
+Top-level hub repo: cor24-project
+
+Keep most existing implementation repos separate rather than merging them into one giant monorepo.
+
+Use cor24-project as the map, not the implementation.
+
+Add one org profile README and pin the 6 most important repos so the org page itself becomes a landing page. GitHub organizations are designed as shared containers for related repositories, and GitHub supports both an organization profile README and pinned repositories on the org overview page. 
+
+That gives you:
+
+Benefits
+Clear story for newcomers.
+
+No forced repo migration risk before the structure is proven.
+
+Independent release cadence for assembler/emulator vs C compiler vs Pascal toolchain vs demos.
+
+A place to explain architecture across Rust, C, Lisp, Forth, Pascal, p-code, and web demos.
+
+Risks
+Too many small repos can still feel fragmented.
+
+Links can rot unless you maintain the hub repo.
+
+Naming drift will confuse people unless you impose conventions now.
+
+Recommended architecture
+Think in layers.
+
+1. Hardware / board / ISA layer
+This explains what COR24 is and what board variants exist.
+
+Repos here might include:
+
+cor24-spec
+
+cor24-boards
+
+cor24-fpga or external MakerLisp references
+
+cor24-project links to MakerLisp COR24 overview
+
+MakerLisp’s COR24 material already gives you a natural anchor for the ISA/soft-CPU story. 
+
+2. Core tooling layer
+These are the foundation repos.
+
+Examples:
+
+cor24-rs — assembler + emulator for COR24-TD
+
+cor24-c or cor24-cc — C compiler
+
+cor24-web or separate demo repos if needed
+
+3. Runtime / language layer
+These sit on top of the core tooling.
+
+Examples:
+
+cor24-macrolisp
+
+cor24-forth
+
+cor24-pcode-vm
+
+cor24-pcode-asm
+
+cor24-pascal
+
+later:
+
+cor24-basic
+
+cor24-apl
+
+4. Demo / teaching / docs layer
+These are outward-facing and easier for people to try.
+
+Examples:
+
+cor24-demos
+
+cor24-web-demos
+
+cor24-examples
+
+cor24-tutorials
+
+Repo strategy: monorepo vs many repos
+For your case, I would not unify everything into one implementation repo.
+
+Use:
+
+One hub repo: cor24-project
+
+Many focused implementation repos
+
+Why that is the better fit:
+
+Pros
+Each subsystem has a clean identity.
+
+Easier to explain maturity per project.
+
+Easier to open-source incrementally.
+
+Easier to keep Rust/C/Pascal/Forth work separated.
+
+Cons
+Cross-repo issues and roadmap are harder.
+
+Shared docs can duplicate.
+
+Alternative
+If some projects are tiny or tightly coupled, combine them selectively, for example:
+
+cor24-pascal-suite
+
+compiler
+
+runtime
+
+linker
+
+p-code assembler
+
+p-code VM
+
+That would make sense if those pieces evolve together and are mostly consumed together.
+
+Naming convention
+I would standardize hard now. Something like this:
+
+Core
+cor24-project
+
+cor24-spec
+
+cor24-rs
+
+cor24-c
+
+Languages
+cor24-macrolisp
+
+cor24-forth
+
+cor24-pcode-vm
+
+cor24-pcode-asm
+
+cor24-pascal
+
+cor24-basic
+
+cor24-apl
+
+Web / demos / docs
+cor24-web-demos
+
+cor24-examples
+
+cor24-docs
+
+Avoid mixing prefixes like sw-, cor24-, makerlisp-, and random historical names unless there is a strong reason. The hub repo should document old names and the new canonical names.
+
+What cor24-project should contain
+The hub repo should answer these questions in under 60 seconds:
+
+What is COR24?
+
+What can I run today?
+
+What are the major subsystems?
+
+In what order should I learn them?
+
+Which repos are active, experimental, or archived?
+
+How do the components relate?
+
+I would structure it like this:
+
+cor24-project/
+  README.md
+  docs/
+    overview.md
+    architecture.md
+    roadmap.md
+    getting-started.md
+    project-status.md
+    repo-index.md
+    demos.md
+    language-stack.md
+    board-targets.md
+  diagrams/
+    ecosystem-overview.svg
+    toolchain-flow.svg
+    dependency-graph.svg
+  examples/
+    hello-world-links.md
+  .github/
+    ISSUE_TEMPLATE/
+    DISCUSSION_TEMPLATE/
+Suggested README outline for cor24-project
+Top section
+2–3 sentence description
+
+one architecture image
+
+quick links:
+
+assembler/emulator
+
+C compiler
+
+Macro Lisp
+
+Forth
+
+p-code VM
+
+Pascal
+
+demos
+
+Then these sections
+1. What is COR24?
+Brief explanation of:
+
+COR24 ISA
+
+COR24-TD board
+
+emulator and FPGA/board relationship
+
+MakerLisp relationship
+
+2. Ecosystem map
+A table like:
+
+Project	Purpose	Language	Status	Depends on	Demo
+cor24-rs	Assembler + emulator	Rust	active	none	yes
+cor24-c	C compiler	C/Rust/etc	active	assembler/emulator	yes
+cor24-macrolisp	Macro Lisp system	C + Lisp	active	cor24-c / runtime	yes
+cor24-forth	Forth interpreter	asm/Forth	active	assembler/emulator	yes
+cor24-pcode-vm	p-code VM	asm/C	active	assembler/emulator	yes
+cor24-pcode-asm	p-code assembler	Rust/C	active	p-code VM	maybe
+cor24-pascal	Pascal compiler	C/Pascal	active	p-code tools	yes
+3. Dependency flow
+Something like:
+
+COR24 ISA / Board
+   ↓
+Assembler + Emulator
+   ↓
+C compiler
+   ↓
+Macro Lisp / Forth / p-code VM
+   ↓
+p-code assembler
+   ↓
+Pascal compiler + runtime + linker
+   ↓
+Future BASIC / APL / web demos
+4. Learning paths
+Different readers need different entry points:
+
+I want to try something in the browser
+
+I want to understand the ISA
+
+I want to write COR24 assembly
+
+I want to experiment with Pascal and p-code
+
+I want to study bootstrapping of languages on custom hardware
+
+That is one of the highest-value sections.
+
+Recommended diagram set
+You should include at least these 3 diagrams.
+
+1. Ecosystem overview
+Shows repo boxes and arrows.
+
+2. Toolchain flow
+Example:
+
+Source (ASM / C / Lisp / Forth / Pascal)
+   ↓
+Compiler / Assembler / Translator
+   ↓
+COR24 binaries or p-code
+   ↓
+Emulator / VM / Web demo / Hardware
+3. Historical / conceptual stack
+Example:
+
+Hardware / ISA
+Tooling
+Runtimes
+Languages
+Demos / Education
+Org-level setup
+At the GitHub organization level, I would do:
+
+org name: sw-cor24
+
+public org profile README in .github/profile/README.md
+
+pin these six repos first:
+
+cor24-project
+
+cor24-rs
+
+cor24-c
+
+cor24-macrolisp
+
+cor24-forth
+
+cor24-pascal
+
+GitHub allows an organization overview README and pinned repositories, which makes this a very good fit for your “unifying front door” goal. 
+
+Migration plan
+Do this in phases.
+
+Phase 1: create the umbrella without breaking anything
+create org sw-cor24
+
+create cor24-project
+
+add org profile README
+
+pin key repos
+
+write the ecosystem map
+
+link to existing repos in softwarewrighter, sw-embed, sw-vibe-coding
+
+Phase 2: normalize names
+decide canonical names
+
+rename only the most visible repos first
+
+leave redirects in place
+
+add “formerly known as” notes in README
+
+Phase 3: move repos selectively
+Move only repos that clearly belong in the new org and are stable enough to keep public-facing.
+
+Phase 4: unify issues/docs if desired
+Later, if needed:
+
+use org discussions
+
+centralize roadmap/issues in cor24-project
+
+leave implementation-specific issues in implementation repos
+
+How I would describe the relationships
+Use both technical relationships and conceptual relationships.
+
+Technical
+“depends on”
+
+“targets”
+
+“runs on”
+
+“emits p-code for”
+
+“consumes output of”
+
+Conceptual
+“teaching/demo”
+
+“bootstrap path”
+
+“experimental language”
+
+“runtime/tooling”
+
+“browser demo”
+
+That matters because some projects are not just dependencies; they are part of the learning story.
+
+Example wording for the main description
+You could say something like:
+
+The COR24 project is a family of tools, language implementations, runtimes, and demos built around the MakerLisp COR24 ISA and related boards. It includes the core assembler and emulator, higher-level language tooling such as a C compiler, Macro Lisp, Forth, and Pascal, a p-code toolchain, and browser-based demos that make the system easier to explore and teach.
+
+That is clear and future-proof.
+
+One important design choice
+I would make cor24-project primarily a documentation and navigation repo, not a code repo.
+
+That keeps it stable and makes it easier to maintain.
+
+If you later want one place that checks ecosystem health, you can add:
+
+link validation
+
+generated repo status tables
+
+badges
+
+a script that builds the dependency graph from YAML/JSON metadata
+
+Recommended metadata file
+In cor24-project, keep a machine-readable catalog like:
+
+projects:
+  - name: cor24-rs
+    category: core-tooling
+    status: active
+    language: Rust
+    purpose: assembler and emulator for COR24-TD
+    depends_on: []
+    outputs: [assembled binaries, emulator runs]
+    demo: true
+
+  - name: cor24-pascal
+    category: language
+    status: active
+    language: C, Pascal
+    purpose: Pascal compiler targeting p-code
+    depends_on: [cor24-pcode-vm, cor24-pcode-asm]
+    demo: true
+Then you can generate tables and diagrams from it.
+
+My opinion on the org/repo names
+Organization
+sw-cor24 is good.
+
+cor24 would be even better if available.
+
+cor24-projects is okay but less elegant.
+
+makerlisp-cor24 is accurate but may imply official MakerLisp ownership if that is not the intent.
+
+Hub repo
+cor24-project is good.
+
+cor24-overview is clearer but less broad.
+
+awesome-cor24 sounds community-curated; probably not what you want.
+
+cor24-ecosystem is also strong.
+
+My preference:
+
+Org: sw-cor24
+
+Hub repo: cor24-project
+
+What I would do next
+Create sw-cor24.
+
+Create cor24-project.
+
+Add:
+
+README.md
+
+docs/repo-index.md
+
+docs/architecture.md
+
+docs/getting-started.md
+
+Add one SVG diagram.
+
+Link existing repos first; move repos later.
+
+Standardize naming only after the documentation reveals the clean grouping.
+
+One note: I tried to inspect your GitHub repos through the GitHub connector, but no repositories are currently selected there, so I could not verify the exact current repo inventory from your account. I therefore based the structure above on your description plus GitHub’s current organization/profile capabilities and MakerLisp’s public COR24 page. 
+
+I can draft the initial cor24-project/README.md and a repo-index.md next.
+
+
+one thing of importance: cor24 is not my branding, it is makerlisp.com's.  My branding is softwarewrighter and sw-xxx.  Also many projects have Tiny in their names (I do not claim these are complete/usable/supported tools, instead these are educational examples of vibe-coding and personal-software, part of a grander vision using FPGAs to build clusters running my own sw-os (operating system inspired by MenuetOS and OS/390).  so, cor24-c means (to some people) makerlisp's own C compiler not mine.  Also makerlisp has a scheme for cor24, mine is less-scheme-like alternative.  so sw-cor24-xxx is better naming, and note the Tiny for C, and macrolisp.  I did not use Tiny for FORTH as it is/or could be a full FORTH.  The Pascal could be renamed Tiny, but it is meant to be a "full" Turbo-Pascal inspired code (for embedded).    Motivation: (1) improve my vibe-coding foo and tools, (2) have a complete dev tool chain that runs on FPGA hardware, (3) run that tool chain in a browser for educational, blogging/vlogging use.
+
+That changes the architecture in an important way.
+
+Restated requirements
+You do not want to imply ownership of the COR24 brand, ISA, or MakerLisp ecosystem. You want:
+
+your own namespace and branding: softwarewrighter / sw-*
+
+a hub that explains your projects for COR24, without sounding official
+
+naming that signals:
+
+educational
+
+experimental
+
+personal-software / vibe-coding
+
+not necessarily production-grade
+
+room for two classes of language tooling:
+
+Tiny tools for learning, bootstrapping, and demos
+
+more ambitious / fuller tools like Forth and Turbo-Pascal-inspired Pascal
+
+a larger framing around:
+
+improving your vibe-coding process and tools
+
+building a complete dev toolchain that can run on FPGA-hosted systems
+
+running the toolchain in a browser for education, blog posts, and videos
+
+That means the repo architecture should be explicitly “Softwarewrighter projects targeting COR24”, not “the COR24 project.”
+
+Revised branding strategy
+Core principle
+Use:
+
+sw-... for your work
+
+...-cor24-... only as a target descriptor
+
+avoid bare cor24-* names because they can sound canonical or official
+
+So instead of:
+
+cor24-c
+
+cor24-project
+
+cor24-pascal
+
+prefer:
+
+sw-cor24-project
+
+sw-tiny-c-cor24
+
+sw-tiny-macrolisp-cor24
+
+sw-forth-cor24
+
+sw-pascal-cor24
+
+This makes authorship and scope obvious.
+
+High-level repo/org recommendation
+Organization
+I would now strongly favor:
+
+GitHub org: softwarewrighter
+
+if you want one org for your whole ecosystem
+
+or GitHub org: sw-vibe-coding
+
+if you want the org itself to emphasize the experimental/vibe-coded angle
+
+or GitHub org: sw-cor24-lab
+
+if you want a dedicated sub-brand for this family
+
+My recommendation
+If your long-term vision extends beyond COR24 into your own OS, FPGA clusters, browser-hosted toolchains, and educational systems work, then the cleanest structure is:
+
+Org: softwarewrighter
+
+Hub repo: sw-cor24-project
+
+Why:
+
+the org represents you
+
+the repo represents your COR24-targeting sub-ecosystem
+
+later you can add sibling hubs:
+
+sw-os-project
+
+sw-fpga-cluster-project
+
+sw-browser-lab
+
+sw-vibe-coding-project
+
+If softwarewrighter as an org is not practical, then:
+
+Org: sw-cor24-lab
+
+Hub repo: sw-cor24-project
+
+is also very good.
+
+Naming architecture
+You now have at least three semantic axes in play:
+
+1. Ownership / brand
+Your work should clearly say sw-.
+
+2. Target platform
+These tools target COR24, so cor24 should stay in the name.
+
+3. Maturity / intent
+You want to distinguish:
+
+tiny / educational / exploratory
+
+fuller / serious / growing systems
+
+That suggests a predictable naming grammar.
+
+Recommended grammar
+Pattern A: educational/experimental tools
+sw-tiny-<tool>-cor24
+
+Examples:
+
+sw-tiny-c-cor24
+
+sw-tiny-macrolisp-cor24
+
+sw-tiny-basic-cor24
+
+sw-tiny-pcode-asm-cor24
+
+Pattern B: fuller tools
+sw-<tool>-cor24
+
+Examples:
+
+sw-forth-cor24
+
+sw-pascal-cor24
+
+sw-pcode-vm-cor24
+
+sw-linker-cor24 or sw-pascal-linker-cor24
+
+Pattern C: umbrella / docs / demos
+sw-cor24-<thing>
+
+Examples:
+
+sw-cor24-project
+
+sw-cor24-demos
+
+sw-cor24-web
+
+sw-cor24-examples
+
+sw-cor24-docs
+
+This is much cleaner than putting cor24 first everywhere.
+
+How “Tiny” should be used
+Your instinct is good: “Tiny” is not just about missing features; it signals:
+
+educational
+
+intentionally scoped
+
+bootstrapping-oriented
+
+personal-software
+
+good for vibe-coding and explanation
+
+not making grand claims
+
+That is very valuable branding.
+
+But it should be used selectively.
+
+Good candidates for Tiny
+C
+
+Macro Lisp
+
+BASIC
+
+p-code assembler
+
+perhaps the first Pascal compiler stage if it is truly subset-oriented
+
+Not ideal for Tiny
+Forth, if the goal is a reasonably authentic and extensible Forth
+
+Pascal, if the long-term intent is “small but real Turbo-Pascal-inspired embedded Pascal”
+
+p-code VM, if it is a core runtime substrate rather than a toy
+
+So I would keep:
+
+sw-forth-cor24
+
+sw-pcode-vm-cor24
+
+sw-pascal-cor24
+
+rather than trying to force Tiny onto everything.
+
+Revised repo set
+Here is a naming set that matches your stated goals.
+
+Hub / overview
+sw-cor24-project
+The portal repo: lists, links, explains, diagrams, motivations, roadmap.
+
+Core tooling
+sw-cor24-rs
+Rust assembler + emulator + maybe core utilities.
+
+sw-tiny-c-cor24
+Your educational C compiler targeting COR24.
+
+Language systems
+sw-tiny-macrolisp-cor24
+Your less-Scheme-like Lisp alternative.
+
+sw-forth-cor24
+
+sw-pcode-vm-cor24
+
+sw-pcode-asm-cor24
+
+sw-pascal-cor24
+
+future:
+
+sw-tiny-basic-cor24
+
+sw-apl-cor24 or sw-tiny-apl-cor24 depending scope
+
+Browser / demos / education
+sw-cor24-web-demos
+
+or, if you want demo code colocated with each tool, keep the demos in each repo and let sw-cor24-project link to them
+
+What the hub repo should now say
+The hub repo should not present itself as “the COR24 project.”
+
+It should present itself as something like:
+
+Softwarewrighter’s collection of educational, experimental, and evolving toolchain projects targeting the MakerLisp COR24 ISA and boards.
+
+That phrasing does four things well:
+
+preserves MakerLisp ownership/credit
+
+makes your target platform explicit
+
+frames the projects as yours
+
+avoids overclaiming completeness
+
+Recommended top-level positioning statement
+A good opening paragraph for sw-cor24-project would be along these lines:
+
+sw-cor24-project is a guide to Softwarewrighter’s educational and experimental tooling for the MakerLisp COR24 ISA. These projects explore bootstrapping language tooling, browser-based demos, FPGA-hosted development systems, and personal vibe-coding workflows. Some tools are intentionally “Tiny” to keep them learnable and explainable; others aim toward fuller embedded systems such as Forth and a Turbo-Pascal-inspired Pascal environment.
+
+That expresses the philosophy, not just the inventory.
+
+The three motivations should be first-class structure
+These are not side notes. They should drive the hub repo.
+
+I would make them a top-level section
+Why this exists
+1. Vibe-coding and personal software
+These repos are a laboratory for improving your own software creation process, including AI-assisted design, incremental tool-building, and educationally useful implementations.
+
+2. A complete toolchain on FPGA-hosted systems
+The long-term goal is not just cross-development from a workstation, but a path toward a self-hosting or near-self-hosting development environment on custom FPGA-based systems.
+
+3. Browser-based education and demos
+The same tooling should be explorable in the browser for tutorials, blogs, videos, and interactive demonstrations.
+
+This turns the repo from a pile of links into a coherent research/development program.
+
+Information architecture for sw-cor24-project
+Recommended structure
+sw-cor24-project/
+  README.md
+  docs/
+    vision.md
+    project-map.md
+    naming.md
+    relationships.md
+    getting-started.md
+    browser-demos.md
+    roadmap.md
+    status.md
+    philosophy.md
+  diagrams/
+    sw-cor24-ecosystem.svg
+    sw-cor24-toolchain-flow.svg
+    sw-cor24-learning-paths.svg
+  data/
+    projects.yaml
+Why this works
+vision.md explains the grander purpose
+
+project-map.md inventories repos
+
+relationships.md explains dependency and conceptual links
+
+philosophy.md explains Tiny, vibe-coding, personal software, educational intent
+
+browser-demos.md supports your vlogging/blogging angle
+
+Project relationship model
+You said the hub must unify and explain relationships. I would classify relationships in four ways.
+
+1. Target relationship
+“targets COR24”
+
+“runs on emulator / FPGA board / browser demo”
+
+2. Build relationship
+“produces assembly”
+
+“produces p-code”
+
+“consumes p-code”
+
+“links runtime with compiled units”
+
+3. Bootstrap relationship
+assembler/emulator enables C
+
+C enables parts of Lisp/Pascal toolchain
+
+p-code VM enables Pascal/BASIC
+
+browser demos expose the systems for teaching
+
+4. Intent relationship
+tiny / educational
+
+fuller / long-lived
+
+demo-first
+
+substrate/runtime
+
+experimental language lab
+
+That gives you a much better README table than a flat list.
+
+Suggested README table shape
+Repo	Role	Intent	Output	Runs where	Notes
+sw-cor24-rs	assembler + emulator	core substrate	COR24 binaries / emulator runs	native, web demos	foundation repo
+sw-tiny-c-cor24	small C compiler	educational / bootstrap	COR24 asm or binaries	native, maybe web	not official MakerLisp C
+sw-tiny-macrolisp-cor24	Lisp system	educational / alternative Lisp	interpreted / compiled forms	native, web	intentionally less Scheme-like
+sw-forth-cor24	Forth system	fuller language system	dictionary image / native behavior	native, web	intended to grow beyond tiny
+sw-pcode-vm-cor24	runtime VM	core substrate	executes p-code	native, web	basis for higher-level languages
+sw-pcode-asm-cor24	p-code assembler	bootstrap tool	p-code images	native, web	assembly-level access to VM
+sw-pascal-cor24	Pascal compiler/runtime/linker	fuller embedded Pascal	p-code + linked runtime	native, web	Turbo-Pascal-inspired
+This already tells a story.
+
+Repo boundaries
+You also need to decide whether Pascal pieces stay together or split.
+
+My recommendation
+For Pascal, I would likely use one umbrella repo at first:
+
+sw-pascal-cor24
+
+and inside it:
+
+compiler
+
+runtime
+
+linker
+
+docs
+
+examples
+
+Why:
+
+these pieces are tightly related
+
+they will evolve together
+
+they are easier to explain together in demos/blog posts
+
+For p-code, I would consider either:
+
+Option A: split
+sw-pcode-vm-cor24
+
+sw-pcode-asm-cor24
+
+Option B: combine
+sw-pcode-cor24
+
+with subdirs:
+
+vm/
+
+asm/
+
+docs/
+
+I slightly prefer Option B unless the VM and assembler are already independently mature.
+
+Recommended naming refinements
+Here is the set I would most seriously consider.
+
+Preferred set
+sw-cor24-project
+
+sw-cor24-rs
+
+sw-tiny-c-cor24
+
+sw-tiny-macrolisp-cor24
+
+sw-forth-cor24
+
+sw-pcode-cor24
+
+sw-pascal-cor24
+
+sw-cor24-web-demos
+
+Alternative if you want stronger lab branding
+sw-cor24-lab
+
+sw-cor24-lab-rs
+
+sw-tiny-c-cor24
+
+sw-tiny-macrolisp-cor24
+
+sw-forth-cor24
+
+sw-pcode-cor24
+
+sw-pascal-cor24
+
+But I think sw-cor24-project is clearer than lab for the hub repo.
+
+Risks and mitigations
+Risk 1: names become long
+sw-tiny-macrolisp-cor24 is descriptive but long.
+
+Mitigation
+Use short display names in docs:
+
+Tiny Macro Lisp
+
+Tiny C
+
+Forth
+
+Pascal
+
+p-code
+
+while keeping repo names explicit.
+
+Risk 2: “Tiny” may undersell useful tools
+People may assume “toy.”
+
+Mitigation
+State explicitly:
+
+Tiny means small, explainable, and educational
+
+not necessarily trivial
+
+not necessarily disposable
+
+Risk 3: COR24 still dominates the name visually
+Even with sw-, some people may still scan and assume official status.
+
+Mitigation
+Put this near the top of the README:
+
+These are independent Softwarewrighter projects targeting the MakerLisp COR24 platform. They are not the official MakerLisp tools.
+
+That one sentence prevents a lot of confusion.
+
+Best positioning sentence for the README
+I would include something like this very early:
+
+This repository maps Softwarewrighter’s independent COR24-targeting projects: small educational compilers and language systems, fuller experimental environments such as Forth and Pascal, and browser-hosted demos used for teaching, blogging, and video creation.
+
+That is very close to your intent.
+
+Concrete recommendation
+If you want one clean answer, mine is:
+
+Use this scheme
+Org
+softwarewrighter if available and aligned with your larger vision
+otherwise
+
+sw-cor24-lab
+
+Hub repo
+sw-cor24-project
+
+Main repos
+sw-cor24-rs
+
+sw-tiny-c-cor24
+
+sw-tiny-macrolisp-cor24
+
+sw-forth-cor24
+
+sw-pcode-cor24
+
+sw-pascal-cor24
+
+sw-cor24-web-demos
+
+What I would do next
+I would next draft these three things in order:
+
+1. A short naming manifesto
+A doc explaining:
+
+why sw-
+
+why cor24 appears only as target
+
+what “Tiny” means
+
+how repo names are formed
+
+2. The top-level sw-cor24-project/README.md
+Including:
+
+disclaimer about MakerLisp ownership
+
+motivations
+
+repo map
+
+relationships
+
+learning paths
+
+3. A project metadata table
+A YAML or markdown table that you can maintain as the ecosystem evolves
+
+The next useful artifact is the actual first-pass README.md for sw-cor24-project.
+
+
+Some other naming considerations.  To keep clear in my head (and potentially help others) I have been using a suffix to denote the main implementation language of a project, hence cor24-rs is written in Rust.  When I started, it combined the assembler and emulator into one command (one use-case: run this assembler).  It has evloved and I want to split it into two repos (or two components of a repo).  The components are cor24-assembler-rs and cor24-emulator-rs.  The forth compiler is named tf24a (Tiny Forth for COR24 in assembler) - so we need to rename to sw-cor24-forth-a.  The p24p/p24c is confusing. repo is p24c, s/b sw-cor24-pascal-c. it was developed in p24p because of a mistake (p is for p-code--it runs in p-code but is compiled from C).  Anway I need to have phases: (1) add umbrella org, repo, readme, live demo w/links to live demos--soon; (2) start renaming repos, (2) combine all the pascal-p-code related ones, but it is more like (a) p-code tools and VM, (b) Pascal compiler and tools, (c) BASIC compiler/tools.  So many repos down to 3; (3) move repos under umbrella org (4) ensure all dependencies, builds, tests, links, documentation reflect the final naming, locations, tools, demos
+
+You are defining a stable naming system, migration path, and repo consolidation plan for a growing COR24-targeting ecosystem under your own sw-* brand, while preserving a strong signal for:
+
+implementation language via suffixes like -rs, -c, -a
+
+target platform via cor24
+
+tool role via names like assembler, emulator, pascal, pcode, forth
+
+authorship/branding via sw-
+
+future consolidation without losing conceptual clarity
+
+That is the right time to impose structure.
+
+High-level recommendation
+I think your current instincts are solid, and I would formalize them into a naming grammar plus a phased migration.
+
+Recommended naming grammar
+Use this pattern:
+
+sw-cor24-<tool-or-domain>-<impl>
+
+Where:
+
+sw = your brand
+
+cor24 = target platform
+
+<tool-or-domain> = assembler, emulator, forth, pascal, pcode, basic, etc.
+
+<impl> = main implementation language
+
+rs = Rust
+
+c = C
+
+a = assembler
+
+optionally later:
+
+fth
+
+lisp
+
+pas
+
+but I would avoid too many suffix styles unless truly needed
+
+This gives you names that are machine-sortable, human-readable, and mentally consistent.
+
+Naming architecture
+1. Core tools
+You want to split current cor24-rs into two distinct components. That makes sense.
+
+Recommended names
+sw-cor24-assembler-rs
+
+sw-cor24-emulator-rs
+
+Why this is good
+each repo/component does one thing
+
+implementation language remains obvious
+
+the target remains explicit
+
+it avoids the ambiguity of cor24-rs, which could mean “the Rust COR24 project”
+
+Tradeoff
+The names are longer.
+
+Why I still prefer them
+Because clarity beats shortness here. You are building a family, not a single throwaway repo.
+
+2. Forth
+You have historical name tf24a = Tiny Forth for COR24 in assembler.
+
+You now want something under the unified naming scheme.
+
+Your proposal
+sw-cor24-forth-a
+
+I think that is good.
+
+My slight refinement
+Use either:
+
+sw-cor24-forth-a if you want the shortest practical name
+or
+
+sw-cor24-forth-asm if you want the suffix to be more obvious to casual readers
+
+My preference
+-a is elegant and consistent if you already use it in your head
+
+-asm is more self-explanatory to outsiders
+
+Because you care about your own internal clarity and a consistent family, I think sw-cor24-forth-a is acceptable and probably best.
+
+Important point
+I would not force Tiny into the new public name unless you want the philosophy foregrounded. Since you said this can become a fuller Forth, sw-cor24-forth-a is better than sw-tiny-forth-cor24-a.
+
+3. Pascal
+You said the current repo is p24c, but it was developed in p24p by mistake because the “p” referred to p-code rather than Pascal source language.
+
+That confusion is exactly what your new naming scheme should eliminate.
+
+Recommended Pascal compiler name
+sw-cor24-pascal-c
+
+That is strong.
+
+It tells you:
+
+branded by you
+
+targets COR24
+
+is Pascal-related
+
+main implementation is C
+
+Why it works better than p24c
+p24c is too compressed and ambiguous
+
+newcomers will not know whether p means p-code, Pascal, project, or platform
+
+sw-cor24-pascal-c makes the source-language/domain explicit
+
+Consolidation architecture
+You want to consolidate many Pascal/p-code-related repos down to about three conceptual groups:
+
+(a) p-code tools and VM
+
+(b) Pascal compiler and tools
+
+(c) BASIC compiler/tools
+
+That is a very good consolidation boundary.
+
+Recommended final grouping
+A. p-code substrate
+This is the runtime/tool substrate.
+
+Suggested repo:
+
+sw-cor24-pcode-c if mostly C
+
+or sw-cor24-pcode-rs if Rust
+
+or, if mixed and intended as a domain umbrella:
+
+sw-cor24-pcode
+
+My recommendation
+If the implementation language matters strongly in your mental model, use the suffix.
+If the repo is going to contain mixed-language pieces and act as a conceptual umbrella, omit the suffix.
+
+For this one, I slightly prefer:
+
+sw-cor24-pcode
+
+with internal directories for:
+
+vm
+
+assembler
+
+linker-ish/common tooling
+
+docs
+
+demos
+
+Why:
+
+p-code is a domain/subsystem, not one narrow program
+
+the repo may become polyglot
+
+“pcode” is the important organizing concept here
+
+B. Pascal compiler/toolchain
+Suggested repo:
+
+sw-cor24-pascal-c
+
+This can contain:
+
+compiler
+
+Pascal-oriented tooling
+
+Pascal runtime glue if it is Pascal-specific
+
+docs/examples/tests
+
+This feels right because Pascal remains the primary conceptual entry point even if pieces inside touch p-code.
+
+C. BASIC compiler/toolchain
+Suggested repo:
+
+sw-cor24-basic-c
+
+or sw-cor24-basic-rs depending on implementation
+
+This cleanly parallels Pascal.
+
+Rule for suffixes
+You mentioned the suffix helps you think. I think you should preserve it, but with one important rule:
+
+Use suffixes when the repo’s main identity is an implementation artifact.
+Examples:
+
+assembler
+
+emulator
+
+compiler
+
+forth implementation
+
+Omit suffixes when the repo is more of a domain umbrella than a single implementation.
+Examples:
+
+sw-cor24-project
+
+maybe sw-cor24-pcode if it will hold several related tools
+
+sw-cor24-web-demos
+
+That balance gives you clarity without making every name overly rigid.
+
+Proposed final repo family
+Here is the scheme I would recommend based on everything you said.
+
+Umbrella / docs / landing
+sw-cor24-project
+
+Core tools
+sw-cor24-assembler-rs
+
+sw-cor24-emulator-rs
+
+Language systems
+sw-cor24-forth-a
+
+sw-cor24-pascal-c
+
+sw-cor24-basic-c
+
+future:
+
+sw-cor24-macrolisp-c
+
+or sw-cor24-tiny-macrolisp-c if Tiny remains important there
+
+p-code substrate
+sw-cor24-pcode
+
+Browser / demos
+sw-cor24-web-demos
+
+That is coherent.
+
+Migration phases
+Your proposed phases are good, but I would tighten and renumber them because you had two phase 2s.
+
+Phase 1 — establish the umbrella
+Goal: create the conceptual center before changing everything else.
+
+Create:
+
+org
+
+sw-cor24-project
+
+top-level README
+
+repo index
+
+relationship diagrams
+
+links to existing repos
+
+links to live demos
+
+Deliverables
+stable landing page
+
+explanation of naming policy
+
+disclaimer that these are independent Softwarewrighter projects targeting MakerLisp COR24
+
+migration tracker table
+
+Why this first
+It gives users one place to follow the reorg, even while repo names are in flux.
+
+Phase 2 — define canonical names
+Goal: stop ambiguity before moving things around.
+
+Make a table mapping:
+
+Old repo	New canonical repo	Notes
+cor24-rs	sw-cor24-assembler-rs + sw-cor24-emulator-rs	split
+tf24a	sw-cor24-forth-a	renamed
+p24c	sw-cor24-pascal-c	clarified
+p24p	folded into sw-cor24-pcode and/or sw-cor24-pascal-c	migration
+Also define:
+
+suffix meanings
+
+Tiny naming rules
+
+when a domain umbrella omits the suffix
+
+Why this matters
+Without a canonical map, the migration becomes emotional and inconsistent.
+
+Phase 3 — consolidate related repos
+Goal: reduce repo sprawl where the conceptual grouping is stronger than the historical split.
+
+You already identified the right grouping:
+
+3A. sw-cor24-pcode
+Contains:
+
+p-code VM
+
+p-code assembler
+
+p-code common tooling
+
+maybe runtime pieces that are shared substrate
+
+3B. sw-cor24-pascal-c
+Contains:
+
+Pascal compiler
+
+Pascal-specific tools
+
+Pascal docs/examples/tests
+
+3C. sw-cor24-basic-c
+Contains:
+
+BASIC compiler/tools
+
+Benefits
+fewer repos
+
+better discoverability
+
+less cross-repo breakage
+
+easier browser demo linking
+
+Risks
+short-term churn
+
+temporary duplication while you merge histories or copy code
+
+possible confusion about what lives where
+
+Mitigation
+Use sw-cor24-project as the source of truth during the transition.
+
+Phase 4 — move repos into the umbrella org
+Goal: align hosting with the new conceptual model.
+
+Move only after:
+
+canonical names are documented
+
+README redirects are ready
+
+live-demo links are known
+
+build/test references are inventoried
+
+Why after consolidation
+Moving before you know the final grouping creates extra churn.
+
+Phase 5 — sweep dependencies, CI, docs, demos
+Goal: make the new structure real.
+
+Update:
+
+README links
+
+cross-repo docs
+
+CI badges
+
+GitHub Pages/live demo links
+
+issue templates
+
+package names if any
+
+build scripts
+
+workspace references
+
+screenshots and blog links
+
+This phase is boring but essential. It is where migrations either feel polished or broken.
+
+Recommended migration metadata file
+In sw-cor24-project, add a file like:
+
+repos:
+  - old: cor24-rs
+    new:
+      - sw-cor24-assembler-rs
+      - sw-cor24-emulator-rs
+    status: planned-split
+    notes: historical combined assembler/emulator repo
+
+  - old: tf24a
+    new:
+      - sw-cor24-forth-a
+    status: planned-rename
+    notes: Tiny Forth for COR24 in assembler; intended to grow beyond tiny
+
+  - old: p24c
+    new:
+      - sw-cor24-pascal-c
+    status: planned-rename
+    notes: Pascal compiler in C
+
+  - old: p24p
+    new:
+      - sw-cor24-pcode
+      - sw-cor24-pascal-c
+    status: planned-consolidation
+    notes: historical naming confusion around p-code vs Pascal
+This is useful for:
+
+README generation
+
+migration tracking
+
+blog posts
+
+future automation
+
+Low-level naming recommendations
+Suffixes
+I would standardize these:
+
+Suffix	Meaning
+-rs	Rust
+-c	C
+-a	assembler
+none	umbrella/domain repo
+I would avoid mixing:
+
+-asm
+
+-s
+
+-fth
+
+-pas
+
+unless you truly need them later.
+
+Word choice
+Prefer:
+
+pcode over p-code in repo names
+
+web-demos over just web
+
+assembler and emulator instead of compressed names
+
+That improves searchability and reduces guesswork.
+
+Suggested structure of sw-cor24-project
+The landing repo should have sections like:
+
+1. What this is
+Softwarewrighter’s independent COR24-targeting projects.
+
+2. Why this exists
+Your three motivations:
+
+vibe-coding improvement
+
+full FPGA-hosted dev toolchain
+
+browser education/blogging/vlogging
+
+3. Repo map
+Canonical repo table.
+
+4. Migration status
+Old name → new name → status.
+
+5. Live demos
+Each demo with:
+
+description
+
+source repo
+
+live URL
+
+6. Architecture relationships
+assembler/emulator
+
+pcode substrate
+
+Pascal
+
+BASIC
+
+Forth
+
+Macro Lisp
+
+7. Naming policy
+Short explicit explanation of sw-, cor24, and suffixes.
+
+That repo becomes both the public map and your private sanity-preserver.
+
+Concrete recommendations on the specific names you mentioned
+Keep / adopt
+sw-cor24-assembler-rs
+
+sw-cor24-emulator-rs
+
+sw-cor24-forth-a
+
+sw-cor24-pascal-c
+
+Strongly consider
+sw-cor24-pcode
+
+sw-cor24-basic-c
+
+sw-cor24-project
+
+sw-cor24-web-demos
+
+Avoid
+cor24-c
+
+cor24-rs
+
+p24c
+
+p24p
+
+They are either ambiguous, too compressed, or too close to implying canonical/official naming.
+
+My strongest opinion
+The most important design decision here is not the exact repo names. It is this:
+
+Make the migration concept-first, not history-first.
+In other words:
+
+do not preserve old accidental structure just because it existed
+
+group by the system you want people to understand:
+
+core tooling
+
+pcode substrate
+
+Pascal
+
+BASIC
+
+Forth
+
+demos
+
+use implementation suffixes only where they help orientation
+
+That will give you a cleaner long-term ecosystem than trying to make p24p, p24c, and other historical names line up through clever explanation.
+
+Recommended final plan
+Phase order
+Create sw-cor24-project with README, migration table, and live demo links.
+
+Define canonical names for all repos.
+
+Split cor24-rs into sw-cor24-assembler-rs and sw-cor24-emulator-rs.
+
+Rename tf24a → sw-cor24-forth-a.
+
+Rename/consolidate Pascal and pcode repos into:
+
+sw-cor24-pcode
+
+sw-cor24-pascal-c
+
+sw-cor24-basic-c
+
+Move repos under umbrella org.
+
+Sweep docs/build/tests/links/demos until no stale names remain.
+
+That sequence minimizes user confusion and gives you one stable landing place from the start.
+
+The next most useful thing to produce is a canonical repo mapping table plus a first draft of the sw-cor24-project README.
+
+
+I need more help/clarity on the suffixes.  I have code written in C, cor24-assembler, Rust, Pascal (e.g. its runtime), I still get confused thinking about p-code.  It has its own p-code assembler, but that was for testing, and for parts of the Pascal runtime that cannot be expressed in Pascal, so maybe never used as a suffix?  I do not plan to extend this to examples or follow-on apps written in sw-cor24-macrolisp, -forth, -pascal, -basic, -apl etc.  So maybe I just need to drop the suffixes and have a really good table somewhere to help me remember. The tools running in FPGA story is incomplete because C does not run there (yet, I think, I'm so confused).  My plan was to create the OS in my macro-lisp plus assembler. So maybe I do not need to port C from Rust to C yet.
+
+You are really deciding what the names are for.
+
+That is the root of the confusion.
+
+Restated design problem
+You currently have several overlapping dimensions:
+
+target: COR24
+
+brand: sw-
+
+domain/tool role: assembler, emulator, macrolisp, forth, pcode, pascal, basic
+
+implementation language: Rust, C, assembler, Pascal
+
+execution substrate: native host, COR24, p-code VM, browser
+
+strategic intent: educational, experimental, fuller system, bootstrap tool
+
+If repo names try to encode too many of those at once, they become hard to reason about and easy to misread.
+
+So the main architectural question is:
+
+What belongs in the repo name, and what belongs in documentation?
+My recommendation now is:
+
+Drop implementation-language suffixes from most repo names
+I think you are right to reconsider them.
+
+Use repo names for:
+
+brand
+
+target
+
+concept / role
+
+Put implementation language, execution mode, maturity, and bootstrapping notes into a canonical table in the umbrella repo.
+
+That is the cleanest model.
+
+Why suffixes are hurting more than helping
+At first, suffixes like -rs, -c, -a seem useful because they provide quick memory cues.
+
+But in your ecosystem they break down because the reality is messier:
+
+one project may contain multiple languages
+
+a project may be implemented in C but target p-code
+
+Pascal runtime pieces may be written partly in Pascal and partly in p-code assembler
+
+something may start in Rust and later move partly to C or assembler
+
+“where it runs” is often more important than “what it is written in”
+
+p-code is not an implementation language, it is a VM instruction layer / intermediate representation / execution substrate
+
+So a suffix gives a false sense of precision.
+
+Example
+sw-cor24-pascal-c
+
+What does that actually tell you?
+
+Pascal compiler written in C?
+
+Pascal system with a C runtime?
+
+Pascal compiler for COR24 that emits C?
+
+repository mostly C today, but later mixed?
+
+It helps a little, but it also misleads.
+
+The deeper conceptual distinction
+You are mixing up at least three different kinds of “language”:
+
+1. Implementation language
+What the repo is written in:
+
+Rust
+
+C
+
+assembler
+
+Pascal
+
+2. Source language
+What the tool processes:
+
+Pascal compiler processes Pascal
+
+Forth interpreter processes Forth
+
+Lisp system processes Lisp
+
+3. Target / execution form
+What it emits or runs on:
+
+COR24 machine code
+
+p-code
+
+browser demo
+
+FPGA-hosted runtime
+
+These are separate columns, not something you want compressed into a suffix.
+
+Recommendation: use semantic repo names, not implementation names
+Preferred repo-name pattern
+Use:
+
+sw-cor24-<domain>
+
+Examples:
+
+sw-cor24-project
+
+sw-cor24-assembler
+
+sw-cor24-emulator
+
+sw-cor24-macrolisp
+
+sw-cor24-forth
+
+sw-cor24-pcode
+
+sw-cor24-pascal
+
+sw-cor24-basic
+
+sw-cor24-apl
+
+sw-cor24-web-demos
+
+That is much easier to think about.
+
+These names answer the most important public question:
+
+What is this repo about?
+
+They do not try to answer:
+
+what language is it written in
+
+whether it runs on FPGA yet
+
+whether it emits p-code or machine code
+
+whether it is tiny/full/experimental
+
+whether it is bootstrapping or self-hosting yet
+
+Those belong in documentation.
+
+What should replace the suffixes?
+A good authoritative table in sw-cor24-project.
+
+I think your intuition there is exactly right.
+
+The hub repo becomes your memory system
+Instead of encoding every nuance in names, create a table like this:
+
+Repo	Purpose	Source language / user model	Implemented in	Emits / runs on	Runs where today	Long-term direction
+sw-cor24-assembler	assemble COR24 source	COR24 asm	Rust	COR24 binaries	host, browser demo	maybe more self-hosting later
+sw-cor24-emulator	emulate COR24 board/system	n/a	Rust	executes COR24 binaries	host, browser demo	FPGA-adjacent teaching/demo tool
+sw-cor24-macrolisp	macro-lisp system	Lisp	C + asm + Lisp	COR24/native forms	host now, COR24 later	basis for OS/tooling
+sw-cor24-forth	Forth system	Forth	assembler	direct/native behavior	emulator/hardware	fuller Forth
+sw-cor24-pcode	p-code VM + tools	p-code / VM substrate	mixed	executes p-code	host, emulator, browser	substrate for Pascal/BASIC
+sw-cor24-pascal	Pascal compiler/toolchain	Pascal	C + Pascal + p-code parts	p-code	host now	fuller embedded Pascal
+sw-cor24-basic	BASIC compiler/toolchain	BASIC	TBD	p-code	planned	teaching + embedded use
+That table is far more truthful than a suffix.
+
+How to think about p-code
+This is one of the main sources of confusion, so it helps to make it explicit.
+
+p-code should not usually be treated like a suffix category
+Because p-code is not primarily:
+
+a source language
+
+an implementation language
+
+a branding axis
+
+It is more like:
+
+a VM instruction set
+
+an intermediate representation
+
+a runtime substrate
+
+a testing/bootstrapping layer
+
+So I would not use -p or -pcode as a suffix meaning “written in p-code,” unless you truly have a repo whose primary identity is “this is a p-code program.”
+
+For your case, it sounds like:
+
+sw-cor24-pcode is the subsystem repo
+
+inside it live:
+
+VM
+
+p-code assembler
+
+maybe test programs
+
+low-level runtime pieces
+
+That is enough.
+
+You do not need suffixes like:
+
+-p
+
+-pcode
+
+-vmcode
+
+etc.
+
+except when pcode is the actual repo subject.
+
+Suggested mental model
+Think of your repos as belonging to one of four categories.
+
+Category A: platform tooling
+assembler
+
+emulator
+
+Names:
+
+sw-cor24-assembler
+
+sw-cor24-emulator
+
+Category B: language systems
+macrolisp
+
+forth
+
+pascal
+
+basic
+
+apl
+
+Names:
+
+sw-cor24-macrolisp
+
+sw-cor24-forth
+
+sw-cor24-pascal
+
+sw-cor24-basic
+
+sw-cor24-apl
+
+Category C: runtime substrate
+p-code VM
+
+p-code assembler
+
+shared runtime-ish pieces
+
+Name:
+
+sw-cor24-pcode
+
+Category D: umbrella / docs / demos
+project map
+
+browser demos
+
+Names:
+
+sw-cor24-project
+
+sw-cor24-web-demos
+
+That is a coherent architecture.
+
+What to do about “Tiny”
+Now that you are thinking of dropping suffixes, I would also revisit where “Tiny” belongs.
+
+My suggestion
+Use “Tiny” as a display/documentation concept, not necessarily always in repo names.
+
+For example, in the table:
+
+Repo	Display name	Notes
+sw-cor24-macrolisp	Tiny Macro Lisp for COR24	educational, small, bootstrap-oriented
+sw-cor24-forth	Forth for COR24	potentially fuller system
+sw-cor24-pascal	Pascal for COR24	Turbo-Pascal-inspired embedded system
+This gives you freedom.
+
+If you later decide Tiny still matters enough for some repos, you can keep it for a few:
+
+sw-cor24-tiny-c
+
+sw-cor24-tiny-macrolisp
+
+But I would not force it everywhere.
+
+On the FPGA-hosted story
+You also raised an important architectural confusion:
+
+The tools running in FPGA story is incomplete because C does not run there yet.
+
+That is fine. Do not let the naming imply a completed self-hosting story that does not exist yet.
+
+This is exactly why names should stay conceptual.
+
+Repo names should describe the subsystem
+not the full current or future bootstrap state.
+
+For example:
+
+sw-cor24-macrolisp is fine whether it currently runs:
+
+on the host,
+
+on the emulator,
+
+partially on real hardware later.
+
+Same for:
+
+sw-cor24-pascal
+
+sw-cor24-pcode
+
+The “runs where” and “self-hosting status” should be table columns, not naming conventions.
+
+Your C question
+You said:
+
+So maybe I do not need to port C from Rust to C yet.
+
+I think that is right.
+
+Architectural recommendation
+Do not reorganize naming around a future implementation-port that may never matter.
+
+Instead, name repos by what they are, and document:
+
+current implementation language
+
+current runtime environment
+
+planned future migration, if any
+
+That avoids premature naming decisions based on uncertain technical evolution.
+
+If your long-term OS is really centered on macro-lisp + assembler, then C may be:
+
+a bootstrap tool
+
+a stepping stone
+
+a host-side compiler
+
+but not the center of the final story
+
+That is another reason not to overemphasize implementation language in repo names.
+
+Proposed final naming approach
+Strong recommendation
+Use these names:
+
+sw-cor24-project
+
+sw-cor24-assembler
+
+sw-cor24-emulator
+
+sw-cor24-macrolisp
+
+sw-cor24-forth
+
+sw-cor24-pcode
+
+sw-cor24-pascal
+
+sw-cor24-basic
+
+sw-cor24-apl
+
+sw-cor24-web-demos
+
+Then in sw-cor24-project, maintain a canonical table with columns like:
+
+repo
+
+display name
+
+purpose
+
+source language / user-facing language
+
+implementation language(s)
+
+output / target
+
+runs where today
+
+intended future
+
+live demo
+
+status
+
+This gives you clarity without forcing misleading suffixes.
+
+If you absolutely want a lightweight implementation cue
+If dropping suffixes entirely feels too lossy, use topics/tags, not names.
+
+For example, GitHub topics like:
+
+rust
+
+c
+
+assembler
+
+pascal
+
+pcode
+
+cor24
+
+fpga
+
+emulator
+
+compiler
+
+lisp
+
+forth
+
+That gives you fast filtering without baking unstable details into repo names.
+
+You can also put a short subtitle at the top of each README:
+
+“Main implementation: Rust”
+
+“Main implementation: C + Pascal + p-code support code”
+
+“Main implementation: assembler”
+
+That is a better place for the detail.
+
+Decision rule
+Here is the simplest rule set I would adopt.
+
+Put in the repo name
+your brand: sw
+
+target: cor24
+
+subsystem name: assembler, emulator, macrolisp, forth, pcode, pascal, basic
+
+Put in the umbrella table
+implementation language(s)
+
+emits machine code or p-code
+
+runs on host, emulator, browser, FPGA
+
+bootstrapping status
+
+tiny/full/experimental notes
+
+dependency relationships
+
+Put in README front matter
+one-line summary
+
+status
+
+implementation languages
+
+current execution environments
+
+live demo link
+
+That is enough.
+
+My bottom-line answer
+Yes — I think you should probably drop the suffixes.
+
+Not because they were a bad idea, but because your ecosystem has grown past the point where one suffix can accurately summarize a repo.
+
+Use clear semantic repo names and a really good central table in sw-cor24-project.
+
+That will likely reduce confusion more than any suffix scheme.
+
+My preferred final set
+sw-cor24-project
+
+sw-cor24-assembler
+
+sw-cor24-emulator
+
+sw-cor24-macrolisp
+
+sw-cor24-forth
+
+sw-cor24-pcode
+
+sw-cor24-pascal
+
+sw-cor24-basic
+
+sw-cor24-apl
+
+sw-cor24-web-demos
+
+And the key insight
+Let repo names answer “what subsystem is this?”
+Let the table answer “how is it implemented, what does it emit, where does it run, and where is it going?”
+
+The next useful step is to design that canonical table schema and the short naming policy for sw-cor24-project.
+
+
+Another consideration (a wrench in the gears of progress?).  cor24 is just a starting point. I also plan to build FPGA soft cpus for IBM 1130, RCA 1802, IBM S/370, and IBM S/390-subset.  I plan to port these cor24 tools to those ISAs/FPGAs/emulators (to be written).  So I have an org sw-embed which covers all of these in some sense.  org sw-cor24 would isolate one set.  then I could add something like org sw-s1130 for all the 1130-related  emulator, assembler, compilers, runtimes, VMs, etc.  BTW, to broaden this, I am pivoting my branding to also include owner hardwarewrighter and hw-cor24 which will have my port of makerlisp's soft cpu from his preferred FPGA to mine.  So all my soft cpus will be under hw-s1130, hw-r1802, hw-s370, hw-s390 etc
+
+This is not a wrench in the gears. It is the missing top-level architecture.
+
+Restated requirements
+You are no longer designing just a COR24 repo family. You are designing a multi-ISA ecosystem with at least two distinct brands:
+
+sw-* for software toolchains, languages, runtimes, VMs, demos, and educational systems
+
+hw-* for hardware/FPGA/soft-CPU ports and board-level work
+
+And COR24 is only the first instance. Future families include at least:
+
+IBM 1130
+
+RCA 1802
+
+IBM S/370
+
+IBM S/390 subset
+
+So the real design problem is now:
+
+What is the correct hierarchy?
+I think the hierarchy should be:
+
+Brand level
+sw-* = software ecosystems
+
+hw-* = hardware ecosystems
+
+ISA/family level
+cor24
+
+s1130
+
+r1802
+
+s370
+
+s390
+
+Project/subsystem level
+assembler
+
+emulator
+
+pcode
+
+pascal
+
+forth
+
+macrolisp
+
+demos
+
+runtime
+
+fpga-core
+
+board-port
+
+etc.
+
+That means you should stop trying to solve this as a single-org naming problem first. The main thing to solve is the portfolio structure.
+
+High-level recommendation
+I would not make sw-cor24 your primary umbrella org.
+
+I would instead use:
+
+sw-embed as the software umbrella across all embedded / retro / custom ISA toolchains
+
+hardwarewrighter or a hardware umbrella brand as the hardware counterpart
+
+Then under those umbrellas, use repo naming conventions that encode ISA family.
+
+That gives you a clean two-axis model:
+
+Software side
+org: sw-embed
+
+repos:
+
+sw-cor24-project
+
+sw-cor24-assembler
+
+sw-cor24-emulator
+
+sw-cor24-pascal
+
+sw-s1130-project
+
+sw-s1130-assembler
+
+sw-r1802-project
+
+sw-s370-project
+
+Hardware side
+org: hardwarewrighter or hw-embed if you want symmetry
+
+repos:
+
+hw-cor24
+
+hw-s1130
+
+hw-r1802
+
+hw-s370
+
+hw-s390
+
+That is much more future-proof than creating a separate org per ISA right away.
+
+Why separate org-per-ISA is probably the wrong first move
+You proposed something like:
+
+sw-cor24
+
+sw-s1130
+
+sw-s370
+
+etc.
+
+That can work, but I think it is too fragmented for where you are now.
+
+Pros
+very clean conceptual isolation
+
+easy mental separation by ISA family
+
+each org can look self-contained
+
+Cons
+too many orgs too early
+
+repeated profile README/admin/config overhead
+
+harder cross-family discoverability
+
+harder to show the shared grand vision
+
+more painful if projects span families
+
+Since you already know these families are conceptually related, a single software umbrella org is probably better.
+
+My recommendation
+Use repos for ISA partitioning, not orgs, at least initially.
+
+So:
+
+one software umbrella org: sw-embed
+
+one hardware umbrella org: hardwarewrighter or hw-embed
+
+Then inside each, partition by repo names.
+
+Best overall structure
+Option A — recommended
+Software org
+sw-embed
+
+Hardware org
+hardwarewrighter
+
+or hw-embed if you want stronger symmetry
+
+Repo naming
+Software:
+
+sw-cor24-project
+
+sw-cor24-assembler
+
+sw-cor24-emulator
+
+sw-cor24-macrolisp
+
+sw-cor24-forth
+
+sw-cor24-pcode
+
+sw-cor24-pascal
+
+sw-cor24-basic
+
+Future software:
+
+sw-s1130-project
+
+sw-s1130-assembler
+
+sw-s1130-emulator
+
+sw-r1802-project
+
+sw-s370-project
+
+sw-s390-project
+
+Hardware:
+
+hw-cor24
+
+hw-s1130
+
+hw-r1802
+
+hw-s370
+
+hw-s390
+
+This is the cleanest structure.
+
+Option B — acceptable but more fragmented
+Separate orgs by ISA family:
+
+Software:
+
+sw-cor24
+
+sw-s1130
+
+sw-r1802
+
+sw-s370
+
+sw-s390
+
+Hardware:
+
+hw-cor24
+
+hw-s1130
+
+hw-r1802
+
+hw-s370
+
+hw-s390
+
+I would only do this later, after one or two families are mature enough that each deserves its own public front door.
+
+Why the two-brand model is actually very strong
+You said:
+
+hw-cor24 = your hardware port of MakerLisp’s soft CPU to your FPGA
+
+sw-cor24-* = your software toolchain and language ecosystem targeting COR24
+
+That is excellent separation.
+
+It gives you clean semantics
+hw-*
+Means:
+
+FPGA core
+
+board adaptation
+
+HDL
+
+timing/resource issues
+
+pin constraints
+
+board-specific integration
+
+maybe peripheral support
+
+sw-*
+Means:
+
+assembler
+
+emulator
+
+compilers
+
+runtimes
+
+VMs
+
+languages
+
+browser demos
+
+educational tooling
+
+operating system experiments
+
+That division is much clearer than mixing “hardware port” and “language toolchain” in one namespace.
+
+Recommended portfolio architecture
+Think of the full portfolio as four layers.
+
+Layer 1 — brand umbrellas
+sw-embed
+
+hardwarewrighter or hw-embed
+
+Layer 2 — ISA families
+COR24
+
+S1130
+
+R1802
+
+S370
+
+S390
+
+Layer 3 — subsystem repos
+Software:
+
+project
+
+assembler
+
+emulator
+
+macrolisp
+
+forth
+
+pcode
+
+pascal
+
+basic
+
+apl
+
+web-demos
+
+Hardware:
+
+soft-cpu
+
+fpga-port
+
+board-support
+
+peripherals
+
+demos
+
+Layer 4 — apps/examples/content
+These probably do not need separate top-level repos yet.
+
+Naming recommendation after this new information
+This new information strengthens the case for:
+
+Keep cor24 in repo names
+because it is the ISA family discriminator.
+
+But:
+
+Do not make sw-cor24 the master org
+because COR24 is only one family.
+
+So the right shape is:
+
+Org
+sw-embed
+
+Repos
+sw-cor24-project
+
+sw-cor24-assembler
+
+sw-cor24-emulator
+
+sw-cor24-macrolisp
+
+sw-cor24-forth
+
+sw-cor24-pcode
+
+sw-cor24-pascal
+
+Then later:
+
+sw-s1130-project
+
+sw-s1130-assembler
+
+sw-r1802-project
+
+sw-s370-project
+
+sw-s390-project
+
+This is exactly the sort of repo-family pattern that scales.
+
+What sw-cor24-project becomes in this bigger picture
+It is no longer “the big umbrella for everything.”
+
+It becomes:
+
+a family hub repo
+for the COR24 branch of the broader sw-embed software ecosystem.
+
+That is good. It reduces pressure on it.
+
+Then eventually you may also want:
+
+sw-embed-project
+
+which would explain the whole multi-ISA vision:
+
+custom and historical ISAs
+
+compilers and runtimes
+
+browser demos
+
+FPGA-hosted tools
+
+OS experiments
+
+cross-family porting
+
+So the structure could become:
+
+At org level
+sw-embed
+
+Top portfolio map
+sw-embed-project
+
+Family hubs
+sw-cor24-project
+
+sw-s1130-project
+
+sw-r1802-project
+
+sw-s370-project
+
+sw-s390-project
+
+This is very strong architecture.
+
+Same idea on the hardware side
+If you are serious about hardwarewrighter / hw-*, I would mirror the pattern.
+
+Hardware org
+Either:
+
+hardwarewrighter
+or
+
+hw-embed
+
+Portfolio map
+hw-embed-project or hardwarewrighter-project
+
+Family repos
+hw-cor24
+
+hw-s1130
+
+hw-r1802
+
+hw-s370
+
+hw-s390
+
+You could also split hardware further later if needed:
+
+hw-cor24-core
+
+hw-cor24-board-port
+
+hw-cor24-peripherals
+
+But for now I would keep hardware family repos broad.
+
+Clear separation of responsibility
+Here is the most useful decision table.
+
+Namespace	Meaning	Examples
+sw-embed	software umbrella org	toolchains, runtimes, VMs, compilers, demos
+sw-<isa>-*	software for a specific ISA family	sw-cor24-pascal, sw-s370-emulator
+hardwarewrighter / hw-embed	hardware umbrella org	HDL, FPGA ports, boards
+hw-<isa>	hardware family repo	hw-cor24, hw-s1130
+That is clean and extensible.
+
+Your concern about COR24 ownership/branding
+This new structure also solves that better.
+
+If you use:
+
+org: sw-embed
+
+repo: sw-cor24-*
+
+then the name says:
+
+these are softwarewrighter projects
+
+they target COR24
+
+they are not claiming the COR24 brand itself
+
+Likewise:
+
+hw-cor24 means your hardware/FPGA work around COR24, not the official COR24 project.
+
+You should still put a disclaimer near the top of the README, but the naming becomes much less problematic.
+
+What I would avoid
+Avoid this for now
+a separate org for each ISA
+
+suffixes for implementation language in repo names
+
+making cor24 the umbrella for work that is really multi-ISA
+
+mixing hardware and software under one repo family without clear labeling
+
+Why
+Because your actual vision is broader:
+
+multiple ISAs
+
+multiple tools
+
+software plus hardware
+
+long-term OS/toolchain/browser story
+
+The naming should match the long-term architecture, not just the current first family.
+
+Recommended immediate plan
+Phase 0 — decide the umbrella brands
+Make a final call on:
+
+Software
+sw-embed as main software org
+
+Hardware
+hardwarewrighter or hw-embed as hardware org
+
+I slightly prefer:
+
+sw-embed
+
+hardwarewrighter
+
+because they reflect your existing and emerging branding.
+
+Phase 1 — create the software umbrella hub
+Create:
+
+sw-embed-project
+
+This explains:
+
+overall mission
+
+software families by ISA
+
+relationship to hardwarewrighter / hw-*
+
+portfolio map
+
+Then create:
+
+sw-cor24-project
+
+This explains the COR24-specific family.
+
+Phase 2 — establish COR24 family repos
+Use semantic names:
+
+sw-cor24-assembler
+
+sw-cor24-emulator
+
+sw-cor24-macrolisp
+
+sw-cor24-forth
+
+sw-cor24-pcode
+
+sw-cor24-pascal
+
+sw-cor24-web-demos
+
+No implementation-language suffixes.
+
+Phase 3 — establish hardware family repos
+Create:
+
+hw-cor24
+
+later:
+
+hw-s1130
+
+hw-r1802
+
+hw-s370
+
+hw-s390
+
+Phase 4 — document the cross-links
+Every sw-cor24-* repo should link to:
+
+sw-cor24-project
+
+related hw-cor24 repo when relevant
+
+Every hw-cor24 repo should link to:
+
+sw-cor24-project
+
+the relevant software tools
+
+This reinforces the two-brand model.
+
+My strongest recommendation now
+Given everything you have said, I would choose this structure:
+
+Software umbrella org
+sw-embed
+
+software portfolio hub
+sw-embed-project
+
+COR24 family
+sw-cor24-project
+
+sw-cor24-assembler
+
+sw-cor24-emulator
+
+sw-cor24-macrolisp
+
+sw-cor24-forth
+
+sw-cor24-pcode
+
+sw-cor24-pascal
+
+sw-cor24-basic
+
+sw-cor24-apl
+
+sw-cor24-web-demos
+
+future families
+sw-s1130-project
+
+sw-r1802-project
+
+sw-s370-project
+
+sw-s390-project
+
+Hardware umbrella org
+hardwarewrighter
+or hw-embed
+
+hardware family repos
+hw-cor24
+
+hw-s1130
+
+hw-r1802
+
+hw-s370
+
+hw-s390
+
+That gives you a scalable portfolio and avoids painting yourself into a COR24-only corner.
+
+Bottom line
+This new information makes the direction clearer:
+
+Do not make COR24 the top-level umbrella.
+Make it one family inside a broader software umbrella.
+
+Use orgs for brand/domain boundaries.
+software = sw-embed
+
+hardware = hardwarewrighter or hw-embed
+
+Use repos for ISA families and subsystems.
+sw-cor24-*
+
+sw-s1130-*
+
+hw-cor24
+
+hw-s370
+
+That is the architecture most likely to survive the next several years of growth.
+
+The next thing worth drafting is a two-level portfolio map:
+
+sw-embed-project top-level structure
+
+sw-cor24-project family structure
+
+
+well the LLC Softwarewrighter is the umbrella brand (owner, company, top level "org").  I like your suggestions.  I can make hardwarewrighter an org under softwarerighter (the github owner).  This makes a lot of sense to me (and is simpler than introducting another "top" level github owner with all the permissions/keys overhead that entails. 
+
+
+Thought for 8s
+Yes — that is a cleaner model.
+
+Recommended structure
+Use:
+
+GitHub personal account / owner: softwarewrighter
+
+Software org: sw-embed
+
+Hardware org: hardwarewrighter
+
+Then keep the repo families inside those orgs:
+
+In sw-embed
+sw-embed-project
+
+sw-cor24-project
+
+sw-cor24-assembler
+
+sw-cor24-emulator
+
+sw-cor24-macrolisp
+
+sw-cor24-forth
+
+sw-cor24-pcode
+
+sw-cor24-pascal
+
+In hardwarewrighter
+hw-cor24
+
+later:
+
+hw-s1130
+
+hw-r1802
+
+hw-s370
+
+hw-s390
+
+Important GitHub nuance
+A GitHub organization is not actually nested under a personal account or another organization in the ownership sense. GitHub’s account types are separate: personal accounts, organization accounts, and enterprise accounts. Organizations are shared accounts; people sign in with personal accounts and can own or administer organizations. If you want true central management of multiple organizations, that is the role of a GitHub enterprise account, not one org “inside” another. 
+
+So the practical interpretation of your idea is:
+
+softwarewrighter is your main identity / top-level brand
+
+hardwarewrighter is a separate org you control
+
+both can coexist without introducing another unrelated top-level brand
+
+you manage them from your personal/admin access, rather than by literally nesting one under the other. 
+
+Why this is a good fit
+This gives you:
+
+one clear company/owner identity: softwarewrighter
+
+one clear software umbrella: sw-embed
+
+one clear hardware umbrella: hardwarewrighter
+
+That matches your actual architecture:
+
+software ecosystems span multiple ISA families
+
+hardware ecosystems span multiple FPGA soft CPUs and board ports
+
+COR24 becomes just one family among several, rather than the top-level container
+
+My strongest recommendation
+I would treat the hierarchy like this conceptually:
+
+Softwarewrighter (company / owner / main brand)
+├── sw-embed          # software org
+│   ├── sw-embed-project
+│   ├── sw-cor24-project
+│   ├── sw-s1130-project
+│   └── ...
+└── hardwarewrighter  # hardware org
+    ├── hw-cor24
+    ├── hw-s1130
+    └── ...
+Even though GitHub won’t model that as literal nested ownership, it works very well as a branding and portfolio structure. GitHub organizations are intended as branded containers for shared work, and enterprise accounts are the layer above organizations if you ever need centralized org governance later. 
+
+Suggested next move
+Start with just these three anchors:
+
+softwarewrighter as the public parent brand
+
+sw-embed for software repos
+
+hardwarewrighter for hardware repos
+
+Then create:
+
+sw-embed-project
+
+sw-cor24-project
+
+hw-cor24
+
+That gives you a stable structure without overcommitting to too many orgs or names at once.
+
+
+
+
