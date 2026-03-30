@@ -1,6 +1,6 @@
 number = 13
 slug = "fork-macrolisp"
-status = "pending"
+status = "in-progress"
 description = "Fork tml24c to sw-cor24-macrolisp under sw-embed. Update path deps. Add scripts/build.sh."
 role = "legacy"
 context_files = []
