@@ -1,0 +1,1 @@
+Forked sw-vibe-coding/tc24r to sw-embed/sw-cor24-tinyc. Updated cor24-isa path dep to ../sw-cor24-emulator/isa, updated cor24-run fallback path, added scripts/build.sh, updated docs. All components build and tests pass (19 passed, 13 ignored). Created GitHub repo, pushed, updated migration status to 9/19.

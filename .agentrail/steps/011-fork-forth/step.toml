@@ -1,6 +1,6 @@
 number = 11
 slug = "fork-forth"
-status = "pending"
+status = "in-progress"
 description = "Fork tf24a to sw-cor24-forth under sw-embed. Update path deps. Add scripts/build.sh."
 role = "legacy"
 context_files = []

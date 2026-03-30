@@ -1,0 +1,1 @@
+Forked web-tc24r to web-sw-cor24-tinyc under sw-embed. Updated all dependency paths (tc24r→sw-cor24-tinyc, cor24-rs→sw-cor24-emulator), bundled header include_str paths, GitHub URLs, package name. Added build-pages.sh script. Removed legacy .agentrail and pre-built pages. Verified cargo check passes. Created GitHub repo and pushed. Updated migration status to 10/19.
