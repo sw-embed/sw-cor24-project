@@ -29,7 +29,7 @@
 | 011 | [sw-cor24-forth](https://github.com/sw-embed/sw-cor24-forth) | fork tf24a | Done |
 | 012 | [web-sw-cor24-forth](https://github.com/sw-embed/web-sw-cor24-forth) | fork web-tf24a | Done |
 | 013 | [sw-cor24-macrolisp](https://github.com/sw-embed/sw-cor24-macrolisp) | fork tml24c | Done |
-| 014 | web-sw-cor24-macrolisp | fork web-tml24c | Pending |
+| 014 | [web-sw-cor24-macrolisp](https://github.com/sw-embed/web-sw-cor24-macrolisp) | fork web-tml24c | Done |
 
 ## Phase 4 — Future / Research
 
@@ -46,4 +46,4 @@
 | 018 | Build portal site (GitHub Pages) | Pending |
 | 019 | Final verification sweep | Pending |
 
-## Progress: 13 / 19 steps complete
+## Progress: 14 / 19 steps complete
