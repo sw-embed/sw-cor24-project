@@ -1,7 +1,8 @@
 number = 6
 slug = "fork-web-pcode"
-status = "in-progress"
+status = "completed"
 description = "Fork web-dv24r to web-sw-cor24-pcode under sw-embed. Update path deps to ../sw-cor24-pcode, ../sw-cor24-assembler, ../sw-cor24-emulator. Update Trunk.toml public_url. Add scripts/build-pages.sh and scripts/serve.sh."
 role = "legacy"
 context_files = []
 created_at = "2026-03-29T15:41:24"
+completed_at = "2026-03-29T19:52:18"
