@@ -16,7 +16,7 @@
 | Step | Repo | Source | Status |
 |------|------|--------|--------|
 | 005 | [sw-cor24-pcode](https://github.com/sw-embed/sw-cor24-pcode) | fork pv24a + absorb pa24r, pl24r | Done |
-| 006 | web-sw-cor24-pcode | fork web-dv24r | Pending |
+| 006 | [web-sw-cor24-pcode](https://github.com/sw-embed/web-sw-cor24-pcode) | fork web-dv24r | Done |
 | 007 | sw-cor24-pascal | fork p24p + absorb p24c, pr24p | Pending |
 | 008 | web-sw-cor24-pascal | fork web-p24c | Pending |
 
@@ -46,4 +46,4 @@
 | 018 | Build portal site (GitHub Pages) | Pending |
 | 019 | Final verification sweep | Pending |
 
-## Progress: 5 / 19 steps complete
+## Progress: 6 / 19 steps complete
