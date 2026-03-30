@@ -18,7 +18,7 @@
 | 005 | [sw-cor24-pcode](https://github.com/sw-embed/sw-cor24-pcode) | fork pv24a + absorb pa24r, pl24r | Done |
 | 006 | [web-sw-cor24-pcode](https://github.com/sw-embed/web-sw-cor24-pcode) | fork web-dv24r | Done |
 | 007 | [sw-cor24-pascal](https://github.com/sw-embed/sw-cor24-pascal) | fork p24c + absorb pr24p | Done |
-| 008 | web-sw-cor24-pascal | fork web-p24c | Pending |
+| 008 | [web-sw-cor24-pascal](https://github.com/sw-embed/web-sw-cor24-pascal) | fork web-p24c | Done |
 
 ## Phase 3 — Language Toolchains
 
@@ -46,4 +46,4 @@
 | 018 | Build portal site (GitHub Pages) | Pending |
 | 019 | Final verification sweep | Pending |
 
-## Progress: 7 / 19 steps complete
+## Progress: 8 / 19 steps complete

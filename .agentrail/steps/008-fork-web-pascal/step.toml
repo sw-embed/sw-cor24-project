@@ -1,6 +1,6 @@
 number = 8
 slug = "fork-web-pascal"
-status = "pending"
+status = "in-progress"
 description = "Fork web-p24c to web-sw-cor24-pascal under sw-embed. Update path deps. Update Trunk.toml public_url. Add scripts/build-pages.sh and scripts/serve.sh."
 role = "legacy"
 context_files = []
