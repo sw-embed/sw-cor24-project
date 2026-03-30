@@ -27,7 +27,7 @@
 | 009 | [sw-cor24-tinyc](https://github.com/sw-embed/sw-cor24-tinyc) | fork tc24r | Done |
 | 010 | [web-sw-cor24-tinyc](https://github.com/sw-embed/web-sw-cor24-tinyc) | fork web-tc24r | Done |
 | 011 | [sw-cor24-forth](https://github.com/sw-embed/sw-cor24-forth) | fork tf24a | Done |
-| 012 | web-sw-cor24-forth | fork web-tf24a | Pending |
+| 012 | [web-sw-cor24-forth](https://github.com/sw-embed/web-sw-cor24-forth) | fork web-tf24a | Done |
 | 013 | sw-cor24-macrolisp | fork tml24c | Pending |
 | 014 | web-sw-cor24-macrolisp | fork web-tml24c | Pending |
 
@@ -46,4 +46,4 @@
 | 018 | Build portal site (GitHub Pages) | Pending |
 | 019 | Final verification sweep | Pending |
 
-## Progress: 11 / 19 steps complete
+## Progress: 12 / 19 steps complete
