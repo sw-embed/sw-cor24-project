@@ -1,0 +1,1 @@
+Trimmed sw-cor24-rust to Rust-to-COR24 pipeline scope. Moved rust-to-cor24/ contents to repo root, removed all non-pipeline code (emulator, assembler, ISA, web UI, CLI, components). Renamed package to sw-cor24-rust, updated deps to sibling repos (cor24-assembler, cor24-emulator), marked wasm2cor24 as deprecated, added scripts/build.sh. Fixed clippy warnings. All 34 tests pass.

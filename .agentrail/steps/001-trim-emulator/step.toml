@@ -1,7 +1,8 @@
 number = 1
 slug = "trim-emulator"
-status = "pending"
+status = "completed"
 description = "Trim sw-cor24-emulator to its scope. Work in ~/github/sw-embed/sw-cor24-emula..."
 role = "legacy"
 context_files = []
 created_at = "2026-03-29T15:41:24"
+completed_at = "2026-03-29T15:54:57"

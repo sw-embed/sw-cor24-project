@@ -1,7 +1,8 @@
 number = 2
 slug = "trim-assembler"
-status = "pending"
+status = "completed"
 description = "Trim sw-cor24-assembler to assembler scope. Remove emulator internals, web app, components. Keep src/assembler.rs + tests. Add path dep on ../sw-cor24-emulator. Add scripts/build.sh. Ensure tests pass."
 role = "legacy"
 context_files = []
 created_at = "2026-03-29T15:41:24"
+completed_at = "2026-03-29T16:18:50"

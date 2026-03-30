@@ -1,0 +1,1 @@
+Forked pv24a to sw-embed/sw-cor24-pcode. Moved VM files into vm/ subdir. Copied pa24r into assembler/ and pl24r into linker/. Established Rust workspace with both crates. Updated assembler test paths. Added scripts/build.sh. All 152 tests pass, clippy clean. Pushed to origin/main.

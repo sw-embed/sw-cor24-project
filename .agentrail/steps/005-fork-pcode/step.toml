@@ -1,7 +1,8 @@
 number = 5
 slug = "fork-pcode"
-status = "pending"
+status = "completed"
 description = "Fork pv24a to sw-cor24-pcode under sw-embed. Move contents into vm/ subdir. Copy pa24r into assembler/ and pl24r into linker/. Set up Rust workspace. Add scripts/build.sh. Ensure all tests pass."
 role = "legacy"
 context_files = []
 created_at = "2026-03-29T15:41:24"
+completed_at = "2026-03-29T19:27:02"

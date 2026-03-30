@@ -1,0 +1,1 @@
+- [Wiki server offline](project_wiki_status.md) — single agent, direct repo access, no wiki until parallel dev resumes
