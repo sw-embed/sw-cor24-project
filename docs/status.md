@@ -24,7 +24,7 @@
 
 | Step | Repo | Source | Status |
 |------|------|--------|--------|
-| 009 | sw-cor24-tinyc | fork tc24r | Pending |
+| 009 | [sw-cor24-tinyc](https://github.com/sw-embed/sw-cor24-tinyc) | fork tc24r | Done |
 | 010 | web-sw-cor24-tinyc | fork web-tc24r | Pending |
 | 011 | sw-cor24-forth | fork tf24a | Pending |
 | 012 | web-sw-cor24-forth | fork web-tf24a | Pending |
@@ -46,4 +46,4 @@
 | 018 | Build portal site (GitHub Pages) | Pending |
 | 019 | Final verification sweep | Pending |
 
-## Progress: 8 / 19 steps complete
+## Progress: 9 / 19 steps complete
