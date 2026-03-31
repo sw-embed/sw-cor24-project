@@ -35,7 +35,7 @@
 
 | Step | Repo | Source | Status |
 |------|------|--------|--------|
-| 015 | sw-cor24-fortran | fork f24a | Pending |
+| 015 | [sw-cor24-fortran](https://github.com/sw-embed/sw-cor24-fortran) | fork f24a | Done |
 | 016 | sw-cor24-apl | fork a24a | Pending |
 
 ## Phase 5 — Finalize
@@ -46,4 +46,4 @@
 | 018 | Build portal site (GitHub Pages) | Pending |
 | 019 | Final verification sweep | Pending |
 
-## Progress: 14 / 19 steps complete
+## Progress: 15 / 19 steps complete
