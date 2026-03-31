@@ -1,7 +1,8 @@
 number = 15
 slug = "fork-fortran"
-status = "pending"
+status = "completed"
 description = "Fork f24a to sw-cor24-fortran under sw-embed. Add scripts/build.sh."
 role = "legacy"
 context_files = []
 created_at = "2026-03-29T15:41:24"
+completed_at = "2026-03-30T17:07:22"

@@ -26,17 +26,35 @@ The ecosystem includes:
 
 ## Repos
 
+### Cross-tools (Rust, run on host)
+
 | Repo | Purpose | Status |
 |------|---------|--------|
 | [sw-cor24-emulator](https://github.com/sw-embed/sw-cor24-emulator) | COR24 emulator + ISA definitions | Active |
-| [sw-cor24-assembler](https://github.com/sw-embed/sw-cor24-assembler) | COR24 assembler | Active |
+| [sw-cor24-x-assembler](https://github.com/sw-embed/sw-cor24-x-assembler) | COR24 cross-assembler (Rust) | Active |
+| [sw-cor24-x-tinyc](https://github.com/sw-embed/sw-cor24-x-tinyc) | COR24 cross C compiler (Rust) | Active |
 | [web-sw-cor24-assembler](https://github.com/sw-embed/web-sw-cor24-assembler) | Browser-based assembly IDE | Active |
+| [web-sw-cor24-tinyc](https://github.com/sw-embed/web-sw-cor24-tinyc) | Browser-based C IDE | Active |
 | [sw-cor24-rust](https://github.com/sw-embed/sw-cor24-rust) | Rust-to-COR24 via MSP430 IR (experimental) | Experimental |
-| sw-cor24-tinyc | Tiny C compiler | *Planned — migrating from [tc24r](https://github.com/sw-vibe-coding/tc24r)* |
-| sw-cor24-forth | Forth system | *Planned — migrating from [tf24a](https://github.com/sw-vibe-coding/tf24a)* |
-| sw-cor24-macrolisp | Macro Lisp system | *Planned — migrating from [tml24c](https://github.com/sw-vibe-coding/tml24c)* |
-| sw-cor24-pcode | P-code VM + assembler + linker | *Planned — consolidating from multiple repos* |
-| sw-cor24-pascal | Pascal compiler + runtime | *Planned — consolidating from multiple repos* |
+
+### Native tools (C, run on COR24)
+
+| Repo | Purpose | Status |
+|------|---------|--------|
+| [sw-cor24-assembler](https://github.com/sw-embed/sw-cor24-assembler) | COR24 native assembler (C) | In development |
+| [sw-cor24-tinyc](https://github.com/sw-embed/sw-cor24-tinyc) | COR24 native C compiler (C) | Future |
+
+### Language toolchains
+
+| Repo | Purpose | Status |
+|------|---------|--------|
+| [sw-cor24-forth](https://github.com/sw-embed/sw-cor24-forth) | Forth system | Active |
+| [sw-cor24-macrolisp](https://github.com/sw-embed/sw-cor24-macrolisp) | Macro Lisp system | Active |
+| [sw-cor24-pascal](https://github.com/sw-embed/sw-cor24-pascal) | Pascal compiler + runtime | Active |
+| [sw-cor24-pcode](https://github.com/sw-embed/sw-cor24-pcode) | P-code VM + assembler + linker | Active |
+| [sw-cor24-apl](https://github.com/sw-embed/sw-cor24-apl) | APL interpreter | Active |
+| [sw-cor24-plsw](https://github.com/sw-embed/sw-cor24-plsw) | PL/SW compiler | In development |
+| [sw-cor24-fortran](https://github.com/sw-embed/sw-cor24-fortran) | Fortran (research) | Research |
 
 ## Documentation
 

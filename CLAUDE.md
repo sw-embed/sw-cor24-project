@@ -69,7 +69,10 @@ This is a docs-only repo. No cargo build. The GitHub Pages site
 
 All COR24 repos live under `~/github/sw-embed/` as siblings:
 - `sw-cor24-emulator` — emulator + ISA (foundation)
-- `sw-cor24-assembler` — assembler (fork of emulator)
+- `sw-cor24-x-assembler` — cross-assembler in Rust (runs on host)
+- `sw-cor24-x-tinyc` — cross C compiler in Rust (runs on host)
+- `sw-cor24-assembler` — native assembler in C (runs on COR24)
+- `sw-cor24-tinyc` — native C compiler in C (future)
 - `web-sw-cor24-assembler` — web IDE
 - `sw-cor24-rust` — Rust-to-COR24 pipeline
 - See `docs/refactoring-plan.md` for the full migration plan

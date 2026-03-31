@@ -1,0 +1,1 @@
+Forked tml24c to sw-cor24-macrolisp under sw-embed. Cloned repo, updated git remote, removed legacy .agentrail and .claude metadata, rewrote README with ecosystem links and fork provenance, rewrote CLAUDE.md without legacy protocol, added scripts/build.sh, created CHANGES.md, committed, created GitHub repo, pushed. Updated status tracker to 13/19.

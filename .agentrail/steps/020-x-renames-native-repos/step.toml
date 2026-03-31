@@ -1,0 +1,22 @@
+[step]
+name = "020-x-renames-native-repos"
+status = "done"
+prompt = """
+Rename cross-tools with x- prefix and create native tool repos.
+
+1. Rename sw-cor24-assembler → sw-cor24-x-assembler (GitHub + local + all deps).
+2. Rename sw-cor24-tinyc → sw-cor24-x-tinyc (GitHub + local + all deps).
+3. Update all Cargo.toml path deps, README links, CLAUDE.md, CHANGES.md,
+   source code include_str! paths, build scripts across all dependent repos.
+4. Create sw-cor24-assembler (native, C) with CLAUDE.md + agentrail saga (14 steps).
+5. Create sw-cor24-tinyc (native, C) as placeholder with README.
+6. Update sw-cor24-project docs/status.md and README.md.
+
+Naming convention: x- prefix = cross-tool (Rust, runs on host).
+Plain name = native tool (C, runs on COR24 FPGA).
+"""
+
+[step.result]
+summary = "Renamed cross-tools with x- prefix, created native assembler and tinyc repos"
+reward = 1
+actions = "gh repo rename, mv, git remote set-url, Edit across ~30 files, gh repo create, agentrail saga setup"

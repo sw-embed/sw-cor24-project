@@ -1,0 +1,1 @@
+Forked softwarewrighter/f24a to sw-embed/sw-cor24-fortran. Added README with project overview and design direction, scripts/build.sh placeholder, and CHANGES.md. Created GitHub repo and pushed. Updated ecosystem status tracker to 15/19.

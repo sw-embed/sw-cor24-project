@@ -7,7 +7,7 @@
 | Step | Repo | Source | Status |
 |------|------|--------|--------|
 | 001 | [sw-cor24-emulator](https://github.com/sw-embed/sw-cor24-emulator) | renamed from cor24-rs | Done |
-| 002 | [sw-cor24-assembler](https://github.com/sw-embed/sw-cor24-assembler) | forked from emulator | Done |
+| 002 | [sw-cor24-x-assembler](https://github.com/sw-embed/sw-cor24-x-assembler) | forked from emulator | Done |
 | 003 | [web-sw-cor24-assembler](https://github.com/sw-embed/web-sw-cor24-assembler) | clone+push from cor24-rs | Done |
 | 004 | [sw-cor24-rust](https://github.com/sw-embed/sw-cor24-rust) | clone+push from cor24-rs | Done |
 
@@ -24,7 +24,7 @@
 
 | Step | Repo | Source | Status |
 |------|------|--------|--------|
-| 009 | [sw-cor24-tinyc](https://github.com/sw-embed/sw-cor24-tinyc) | fork tc24r | Done |
+| 009 | [sw-cor24-x-tinyc](https://github.com/sw-embed/sw-cor24-x-tinyc) | fork tc24r | Done |
 | 010 | [web-sw-cor24-tinyc](https://github.com/sw-embed/web-sw-cor24-tinyc) | fork web-tc24r | Done |
 | 011 | [sw-cor24-forth](https://github.com/sw-embed/sw-cor24-forth) | fork tf24a | Done |
 | 012 | [web-sw-cor24-forth](https://github.com/sw-embed/web-sw-cor24-forth) | fork web-tf24a | Done |
@@ -46,4 +46,11 @@
 | 018 | Build portal site (GitHub Pages) | Pending |
 | 019 | Final verification sweep | Pending |
 
-## Progress: 16 / 19 steps complete
+## Phase 6 — Native Toolchain
+
+| Step | Repo | Description | Status |
+|------|------|-------------|--------|
+| 020 | [sw-cor24-assembler](https://github.com/sw-embed/sw-cor24-assembler) | Native COR24 assembler in C | In development |
+| — | [sw-cor24-tinyc](https://github.com/sw-embed/sw-cor24-tinyc) | Native COR24 C compiler in C | Future |
+
+## Progress: 16 / 19 migration steps complete

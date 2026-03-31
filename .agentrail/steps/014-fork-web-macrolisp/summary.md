@@ -1,0 +1,1 @@
+Forked web-tml24c to web-sw-cor24-macrolisp under sw-embed. Updated package name, path deps (../sw-cor24-emulator), demo include paths (../sw-cor24-macrolisp/demos/), GitHub links, build scripts. Added build-pages.sh. Removed .agentrail/ and .claude/ dirs. Created GitHub repo and pushed. Updated project status to 14/19.
