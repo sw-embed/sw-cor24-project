@@ -571,6 +571,50 @@ markdown-checker --fix
 chmod +x ~/.local/softwarewrighter/bin/<tool-name>
 ```
 
+## In-Repo Reporting Scripts
+
+### scripts/gen-closed-issues.sh
+
+**Purpose**: Generates `closed-issues/index.html` -- a dark-themed HTML table
+showing closed issues across all `sw-embed/sw-cor24-*` and `sw-embed/cor24-*`
+repos, grouped by date.
+
+**Dependencies**: `gh` (GitHub CLI), `jq`, `awk`, standard unix tools
+
+**Usage**:
+```bash
+bash scripts/gen-closed-issues.sh
+```
+
+**How it works**:
+1. Lists all matching repos via `gh api /orgs/sw-embed/repos`
+2. Paginates closed issues for each repo (100 per page)
+3. Builds a TSV of date/repo/number/title in a temp directory
+4. Formats a sticky-header HTML table with linked issue tooltips
+
+### scripts/gen-commits.sh
+
+**Purpose**: Generates `commits/index.html` -- a dark-themed HTML table
+showing commit activity across all matching repos, grouped by hour
+(sparse -- only hours with commits get columns).
+
+**Dependencies**: `gh` (GitHub CLI), `jq`, `awk`, standard unix tools
+
+**Usage**:
+```bash
+bash scripts/gen-commits.sh
+```
+
+**How it works**:
+1. Lists all matching repos via `gh api /orgs/sw-embed/repos`
+2. Paginates commits for each repo (100 per page)
+3. Builds a TSV of hour/repo/sha/message in a temp directory
+4. Formats a sticky-header HTML table with linked commit tooltips
+   (7-char SHA, first line of message as tooltip)
+
+**Note**: Both scripts overwrite their output files. Re-run to refresh
+after new issues are closed or commits are pushed.
+
 ## Future Tools
 
 As new tools are added to `~/.local/softwarewrighter/bin/`, document them here:

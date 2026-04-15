@@ -83,6 +83,13 @@ The ecosystem includes:
 | [web-sw-cor24-apl](https://github.com/sw-embed/web-sw-cor24-apl) | Browser-based APL sandbox | Active |
 | [web-sw-cor24-plsw](https://github.com/sw-embed/web-sw-cor24-plsw) | Browser-based PL/SW IDE | Active |
 
+## Reporting
+
+- `scripts/gen-closed-issues.sh` -- generates `closed-issues/index.html` (closed issues heatmap by repo/date)
+- `scripts/gen-commits.sh` -- generates `commits/index.html` (commit activity heatmap by repo/hour)
+
+Both scripts query the GitHub API via `gh` + `jq` for all `sw-embed/sw-cor24-*` and `sw-embed/cor24-*` repos. Re-run to refresh.
+
 ## Documentation
 
 - [Refactoring Plan](docs/refactoring-plan.md) — detailed 9-phase migration plan
