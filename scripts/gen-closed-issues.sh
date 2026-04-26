@@ -8,21 +8,32 @@ ORG="sw-embed"
 TMPDIR_WORK=$(mktemp -d)
 trap 'rm -rf "$TMPDIR_WORK"' EXIT
 
-REPOS=$(gh api "/orgs/$ORG/repos?per_page=100" --jq '.[].name' | grep -E '^sw-cor24-|^cor24-' | sort)
+# Auto-discover sw-embed repos, then append extra cross-org PoC repos.
+# Format per line: "repo<TAB>org"
+REPOS_TSV=$(
+  {
+    gh api "/orgs/$ORG/repos?per_page=100" --jq '.[].name' \
+      | grep -E '^sw-cor24-|^cor24-' \
+      | awk -v org="$ORG" '{ print $0 "\t" org }'
+    # Extra repos outside sw-embed (PoCs, vibe-coding playground, etc.)
+    printf 'tuplet\tsw-vibe-coding\n'
+  } | sort
+)
+REPOS=$(echo "$REPOS_TSV" | cut -f1)
 
 echo "Fetching closed issues..."
-for repo in $REPOS; do
+while IFS=$'\t' read -r repo repo_org; do
   PAGE=1
   while true; do
-    RESP=$(gh api "/repos/$ORG/$repo/issues?state=closed&per_page=100&page=$PAGE" 2>/dev/null || echo '[]')
+    RESP=$(gh api "/repos/$repo_org/$repo/issues?state=closed&per_page=100&page=$PAGE" 2>/dev/null || echo '[]')
     COUNT=$(echo "$RESP" | jq length)
     [ "$COUNT" -eq 0 ] && break
-    echo "$RESP" | jq -r --arg repo "$repo" --arg org "$ORG" \
+    echo "$RESP" | jq -r --arg repo "$repo" --arg org "$repo_org" \
       '.[] | "\(.closed_at[:10])\t\($repo)\t\(.number)\t\(.title | gsub("&";"&amp;") | gsub("\"";"&quot;") | gsub("<";"&lt;") | gsub(">";"&gt;"))\t\($org)"' \
       >> "$TMPDIR_WORK/issues.tsv"
     PAGE=$((PAGE + 1))
   done
-done
+done <<< "$REPOS_TSV"
 
 TOTAL_ISSUES=$(wc -l < "$TMPDIR_WORK/issues.tsv" | tr -d ' ')
 ALL_DATES=$(cut -f1 "$TMPDIR_WORK/issues.tsv" | sort -u)
@@ -44,8 +55,8 @@ while IFS= read -r d; do
 done <<< "$ALL_DATES"
 
 ROWS=""
-while IFS= read -r repo; do
-  ROW="<th class=\"repo\"><a href=\"https://github.com/$ORG/$repo\">$repo</a></th>"
+while IFS=$'\t' read -r repo repo_org; do
+  ROW="<th class=\"repo\"><a href=\"https://github.com/$repo_org/$repo\">$repo</a></th>"
   while IFS= read -r d; do
     CELL_ISSUES=$(awk -F'\t' -v repo="$repo" -v date="$d" \
       '$2 == repo && $1 == date { printf "<a href=\"https://github.com/%s/%s/issues/%s\" title=\"%s\">#%s</a>\n", $5, $2, $3, $4, $3 }' \
@@ -63,7 +74,7 @@ while IFS= read -r repo; do
     fi
   done <<< "$ALL_DATES"
   ROWS="${ROWS}<tr>${ROW}</tr>"
-done <<< "$REPOS"
+done <<< "$REPOS_TSV"
 
 mkdir -p "$(dirname "$OUTPUT")"
 

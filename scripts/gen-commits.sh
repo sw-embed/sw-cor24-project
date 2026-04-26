@@ -8,21 +8,32 @@ ORG="sw-embed"
 TMPDIR_WORK=$(mktemp -d)
 trap 'rm -rf "$TMPDIR_WORK"' EXIT
 
-REPOS=$(gh api "/orgs/$ORG/repos?per_page=100" --jq '.[].name' | grep -E '^sw-cor24-|^cor24-' | sort)
+# Auto-discover sw-embed repos, then append extra cross-org PoC repos.
+# Format per line: "repo<TAB>org"
+REPOS_TSV=$(
+  {
+    gh api "/orgs/$ORG/repos?per_page=100" --jq '.[].name' \
+      | grep -E '^sw-cor24-|^cor24-' \
+      | awk -v org="$ORG" '{ print $0 "\t" org }'
+    # Extra repos outside sw-embed (PoCs, vibe-coding playground, etc.)
+    printf 'tuplet\tsw-vibe-coding\n'
+  } | sort
+)
+REPOS=$(echo "$REPOS_TSV" | cut -f1)
 
 echo "Fetching commits..."
-for repo in $REPOS; do
+while IFS=$'\t' read -r repo repo_org; do
   PAGE=1
   while true; do
-    RESP=$(gh api "/repos/$ORG/$repo/commits?per_page=100&page=$PAGE" 2>/dev/null || echo '[]')
+    RESP=$(gh api "/repos/$repo_org/$repo/commits?per_page=100&page=$PAGE" 2>/dev/null || echo '[]')
     COUNT=$(echo "$RESP" | jq length)
     [ "$COUNT" -eq 0 ] && break
-    echo "$RESP" | jq -r --arg repo "$repo" --arg org "$ORG" \
+    echo "$RESP" | jq -r --arg repo "$repo" --arg org "$repo_org" \
       '.[] | "\(.commit.author.date[:13])\t\($repo)\t\(.sha[:7])\t\(.commit.message | split("\n")[0] | gsub("&";"&amp;") | gsub("\"";"&quot;") | gsub("<";"&lt;") | gsub(">";"&gt;"))\t\($org)"' \
       >> "$TMPDIR_WORK/commits.tsv"
     PAGE=$((PAGE + 1))
   done
-done
+done <<< "$REPOS_TSV"
 
 TOTAL_COMMITS=$(wc -l < "$TMPDIR_WORK/commits.tsv" | tr -d ' ')
 ALL_HOURS=$(cut -f1 "$TMPDIR_WORK/commits.tsv" | sort -u)
@@ -78,8 +89,8 @@ write_html() {
   echo '</tr></thead>'
 
   echo '<tbody>'
-  while IFS= read -r repo; do
-    printf '<tr><th class="repo"><a href="https://github.com/%s/%s">%s</a></th>' "$ORG" "$repo" "$repo"
+  while IFS=$'\t' read -r repo repo_org; do
+    printf '<tr><th class="repo"><a href="https://github.com/%s/%s">%s</a></th>' "$repo_org" "$repo" "$repo"
     while IFS= read -r h; do
       CELL_COMMITS=$(awk -F'\t' -v repo="$repo" -v hour="$h" \
         '$2 == repo && $1 == hour { printf "<a href=\"https://github.com/%s/%s/commit/%s\" title=\"%s\">%s</a>\n", $5, $2, $3, $4, $3 }' \
@@ -96,7 +107,7 @@ write_html() {
       fi
     done <<< "$ALL_HOURS"
     echo '</tr>'
-  done <<< "$REPOS"
+  done <<< "$REPOS_TSV"
 
   echo '</tbody>'
   echo '</table>'
